@@ -45,12 +45,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/async-modal.git"
+    "url": "https://github.com/kaangrbz/async-modal.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/async-modal/issues"
+    "url": "https://github.com/kaangrbz/async-modal/issues"
   },
-  "homepage": "https://github.com/yourusername/async-modal#readme",
+  "homepage": "https://github.com/kaangrbz/async-modal#readme",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.0"
   },
