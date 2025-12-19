@@ -2,6 +2,16 @@
 
 A Promise-based modal system that returns user selection, with support for confirmation checkboxes, auto-dismiss timeouts, and customizable buttons.
 
+## Screenshots
+
+![Basic Confirmation Modal](images/confirm_action_with_cancel_button.png)
+
+![Danger Action Modal](images/confirm_action_with_cancel_button_danger.png)
+
+![Modal with Timeout](images/confirm_action_with_timeout_cancel_button.png)
+
+![Timeout Continue Button](images/timeout_continue_button.png)
+
 ## Features
 
 - ✅ Promise-based API - Use async/await for clean code
