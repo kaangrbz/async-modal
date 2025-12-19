@@ -1,0 +1,40 @@
+{
+  "defaults": {
+    "title": "確認が必要です",
+    "message": "続行してもよろしいですか？",
+    "confirmationText": "このアクションの責任を受け入れることを確認します"
+  },
+  "buttons": {
+    "continue": "続行",
+    "cancel": "キャンセル",
+    "settings": "設定へ",
+    "help": "ヘルプ",
+    "yes": "はい",
+    "no": "いいえ",
+    "ok": "OK",
+    "close": "閉じる"
+  },
+  "titles": {
+    "confirmation": "確認が必要です",
+    "dangerous": "危険な操作",
+    "warning": "警告",
+    "info": "情報",
+    "success": "成功",
+    "error": "エラー",
+    "workingTimeViolation": "勤務時間外",
+    "responsibility": "責任確認が必要です"
+  },
+  "messages": {
+    "workingTimeViolation": "現在、勤務時間外です。続行してもよろしいですか？",
+    "deleteConfirm": "この項目は永続的に削除されます。この操作は元に戻せません。",
+    "saveConfirm": "変更を保存しますか？",
+    "unsavedChanges": "保存されていない変更があります。終了する前に保存しますか？",
+    "sessionExpiring": "セッションがまもなく期限切れになります。",
+    "criticalAction": "これは確認が必要な重要な操作です。"
+  },
+  "timeout": {
+    "seconds": "秒",
+    "expired": "時間切れ"
+  }
+}
+

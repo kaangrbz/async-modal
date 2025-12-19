@@ -1,0 +1,248 @@
+/* Async Modal Styles */
+.async-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Prevent closing by clicking overlay - modal can only be closed with buttons */
+  pointer-events: auto;
+}
+
+.async-modal {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 700px;
+  width: 95%;
+  max-height: 80vh;
+  overflow-y: auto;
+  /* Prevent closing by clicking modal itself */
+  pointer-events: auto;
+}
+
+.async-modal-header {
+  padding: 20px 20px 10px 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.async-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.async-modal-icon {
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.async-modal-icon-warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.async-modal-icon-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.async-modal-icon-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.async-modal-icon-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.async-modal-icon-question {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.async-modal-body {
+  padding: 20px;
+}
+
+.async-modal-message {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.async-modal-confirmation {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+}
+
+.async-modal-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #495057;
+  margin: 0;
+  user-select: none;
+}
+
+.async-modal-checkbox {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #007bff;
+}
+
+.async-modal-checkbox-text {
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.async-modal-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.async-modal-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  margin-left: 10px;
+}
+
+.async-modal-btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.async-modal-btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+.async-modal-btn-continue {
+  background-color: #28a745;
+  color: white;
+}
+
+.async-modal-btn-continue:hover {
+  background-color: #218838;
+}
+
+.async-modal-btn-settings {
+  background-color: #007bff;
+  color: white;
+}
+
+.async-modal-btn-settings:hover {
+  background-color: #0056b3;
+}
+
+.async-modal-btn-help {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.async-modal-btn-help:hover {
+  background-color: #138496;
+}
+
+.async-modal-btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.async-modal-btn-danger:hover {
+  background-color: #c82333;
+}
+
+.async-modal-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  background-color: #6c757d !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+.async-modal-btn:disabled:hover {
+  background-color: #6c757d !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .async-modal {
+    width: 98%;
+    max-width: none;
+    margin: 10px;
+  }
+  
+  .async-modal-buttons {
+    flex-direction: column;
+  }
+  
+  .async-modal-btn {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+/* Animation Effects */
+.async-modal-overlay {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.async-modal {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+

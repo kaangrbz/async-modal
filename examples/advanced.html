@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Async Modal - Advanced Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../src/async-modal.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .example-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Async Modal - Advanced Examples</h1>
+    
+    <div class="example-section">
+        <h2>Confirmation Checkbox</h2>
+        <p>Modal that requires checkbox confirmation before proceeding.</p>
+        <button onclick="showWithCheckbox()">Show with Checkbox</button>
+        <div id="result1" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Auto-Dismiss Timeout</h2>
+        <p>Modal that automatically closes after 10 seconds.</p>
+        <button onclick="showWithTimeout()">Show with Timeout (10s)</button>
+        <div id="result2" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Multiple Buttons</h2>
+        <p>Modal with all button types: Cancel, Continue, Settings, Help, Danger.</p>
+        <button onclick="showMultipleButtons()">Show Multiple Buttons</button>
+        <div id="result3" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Responsibility Confirmation</h2>
+        <p>Use the helper method for responsibility confirmation.</p>
+        <button onclick="showResponsibility()">Show Responsibility Confirmation</button>
+        <div id="result4" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Working Time Violation</h2>
+        <p>Modal for working hours violations.</p>
+        <button onclick="showWorkingTime()">Show Working Time Violation</button>
+        <div id="result5" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Disabled Buttons</h2>
+        <p>Modal with all buttons initially disabled.</p>
+        <button onclick="showDisabled()">Show Disabled Buttons</button>
+        <div id="result6" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Combined Features</h2>
+        <p>Modal with checkbox, timeout, and multiple buttons.</p>
+        <button onclick="showCombined()">Show Combined Features</button>
+        <div id="result7" class="result"></div>
+    </div>
+
+    <script src="../src/asyncModal.js"></script>
+    <script>
+        async function showWithCheckbox() {
+            const result = await window.asyncModal.show({
+                title: 'Delete Account',
+                message: 'This will permanently delete your account. This action cannot be undone.',
+                showCancel: true,
+                showContinue: true,
+                requireConfirmation: true,
+                confirmationText: 'I understand this action is irreversible and I accept full responsibility',
+                icon: 'danger'
+            });
+            document.getElementById('result1').textContent = `Result: ${result}`;
+        }
+
+        async function showWithTimeout() {
+            const result = await window.asyncModal.show({
+                title: 'Session Expiring',
+                message: 'Your session will expire in 10 seconds. Click Cancel to extend your session.',
+                showCancel: true,
+                showContinue: false,
+                autoDismissTimeout: true,
+                autoDismissTimeoutSeconds: 10,
+                cancelButtonText: 'Extend Session'
+            });
+            document.getElementById('result2').textContent = `Result: ${result} (auto-closed if timeout expired)`;
+        }
+
+        async function showMultipleButtons() {
+            const result = await window.asyncModal.show({
+                title: 'Action Required',
+                message: 'Please choose an action:',
+                showCancel: true,
+                showContinue: true,
+                showSettings: true,
+                showHelp: true,
+                showDanger: true,
+                icon: 'question'
+            });
+            
+            let message = `Result: ${result}`;
+            switch(result) {
+                case 'continue':
+                    message += ' - User chose to continue';
+                    break;
+                case 'settings':
+                    message += ' - User chose to go to settings';
+                    break;
+                case 'help':
+                    message += ' - User chose to get help';
+                    break;
+                case 'danger':
+                    message += ' - User chose the danger action';
+                    break;
+                case 'cancel':
+                    message += ' - User cancelled';
+                    break;
+            }
+            document.getElementById('result3').textContent = message;
+        }
+
+        async function showResponsibility() {
+            const result = await window.asyncModal.showConfirmationWithResponsibility(
+                'This action may have serious consequences. Please confirm that you understand and accept responsibility.',
+                'I confirm that I accept full responsibility for this action and its consequences'
+            );
+            document.getElementById('result4').textContent = `Result: ${result}`;
+        }
+
+        async function showWorkingTime() {
+            const result = await window.asyncModal.showWorkingTimeViolation({
+                message: 'You are currently outside working hours. Are you sure you want to proceed?'
+            });
+            document.getElementById('result5').textContent = `Result: ${result}`;
+        }
+
+        async function showDisabled() {
+            const result = await window.asyncModal.show({
+                title: 'Processing',
+                message: 'Please wait while we process your request...',
+                disabled: true,
+                showCancel: true,
+                showContinue: true
+            });
+            document.getElementById('result6').textContent = `Result: ${result} (buttons were disabled initially)`;
+        }
+
+        async function showCombined() {
+            const result = await window.asyncModal.show({
+                title: 'Critical Action',
+                message: 'This is a critical action that requires confirmation and will auto-cancel in 15 seconds.',
+                showCancel: true,
+                showContinue: true,
+                showHelp: true,
+                requireConfirmation: true,
+                confirmationText: 'I understand the risks and accept responsibility',
+                autoDismissTimeout: true,
+                autoDismissTimeoutSeconds: 15,
+                icon: 'warning'
+            });
+            document.getElementById('result7').textContent = `Result: ${result}`;
+        }
+    </script>
+</body>
+</html>
+

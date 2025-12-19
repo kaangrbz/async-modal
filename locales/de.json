@@ -1,0 +1,40 @@
+{
+  "defaults": {
+    "title": "Bestätigung Erforderlich",
+    "message": "Sind Sie sicher, dass Sie fortfahren möchten?",
+    "confirmationText": "Ich bestätige, dass ich die Verantwortung für diese Aktion übernehme"
+  },
+  "buttons": {
+    "continue": "Fortfahren",
+    "cancel": "Abbrechen",
+    "settings": "Zu den Einstellungen",
+    "help": "Hilfe",
+    "yes": "Ja",
+    "no": "Nein",
+    "ok": "OK",
+    "close": "Schließen"
+  },
+  "titles": {
+    "confirmation": "Bestätigung Erforderlich",
+    "dangerous": "Gefährliche Aktion",
+    "warning": "Warnung",
+    "info": "Information",
+    "success": "Erfolg",
+    "error": "Fehler",
+    "workingTimeViolation": "Außerhalb der Arbeitszeit",
+    "responsibility": "Verantwortungsbestätigung Erforderlich"
+  },
+  "messages": {
+    "workingTimeViolation": "Sie befinden sich derzeit außerhalb der Arbeitszeit. Sind Sie sicher, dass Sie fortfahren möchten?",
+    "deleteConfirm": "Dies wird dieses Element dauerhaft löschen. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "saveConfirm": "Möchten Sie Ihre Änderungen speichern?",
+    "unsavedChanges": "Sie haben nicht gespeicherte Änderungen. Möchten Sie sie speichern, bevor Sie gehen?",
+    "sessionExpiring": "Ihre Sitzung läuft bald ab.",
+    "criticalAction": "Dies ist eine kritische Aktion, die eine Bestätigung erfordert."
+  },
+  "timeout": {
+    "seconds": "Sek",
+    "expired": "Zeit abgelaufen"
+  }
+}
+

@@ -1,0 +1,40 @@
+{
+  "defaults": {
+    "title": "Onay Gerekli",
+    "message": "Bu işlemi yapmak istediğinizden emin misiniz?",
+    "confirmationText": "Bu işlemin sorumluluğunu kabul ettiğimi onaylıyorum"
+  },
+  "buttons": {
+    "continue": "Devam Et",
+    "cancel": "İptal Et",
+    "settings": "Ayarlara Git",
+    "help": "Yardım",
+    "yes": "Evet",
+    "no": "Hayır",
+    "ok": "Tamam",
+    "close": "Kapat"
+  },
+  "titles": {
+    "confirmation": "Onay Gerekli",
+    "dangerous": "Tehlikeli İşlem",
+    "warning": "Uyarı",
+    "info": "Bilgi",
+    "success": "Başarılı",
+    "error": "Hata",
+    "workingTimeViolation": "Çalışma Saati Dışında İşlem",
+    "responsibility": "Sorumluluk Onayı Gerekli"
+  },
+  "messages": {
+    "workingTimeViolation": "Şu anda çalışma saatleri dışındasınız. Bu işlemi yapmak istediğinizden emin misiniz?",
+    "deleteConfirm": "Bu öğe kalıcı olarak silinecektir. Bu işlem geri alınamaz.",
+    "saveConfirm": "Değişikliklerinizi kaydetmek istiyor musunuz?",
+    "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. Ayrılmadan önce kaydetmek istiyor musunuz?",
+    "sessionExpiring": "Oturumunuz yakında sona erecek.",
+    "criticalAction": "Bu, onay gerektiren kritik bir işlemdir."
+  },
+  "timeout": {
+    "seconds": "sn",
+    "expired": "Süre doldu"
+  }
+}
+

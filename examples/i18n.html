@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Async Modal - Internationalization Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../src/async-modal.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .example-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .language-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .lang-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .lang-btn:hover {
+            background-color: #0056b3;
+        }
+        .lang-btn.active {
+            background-color: #28a745;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .current-lang {
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Async Modal - Internationalization (i18n) Examples</h1>
+    
+    <div class="example-section">
+        <h2>Select Language</h2>
+        <p class="current-lang">Current Language: <span id="currentLang">English (en)</span></p>
+        <div class="language-selector">
+            <button class="lang-btn" onclick="setLanguage('en')">English</button>
+            <button class="lang-btn" onclick="setLanguage('tr')">Türkçe</button>
+            <button class="lang-btn" onclick="setLanguage('es')">Español</button>
+            <button class="lang-btn" onclick="setLanguage('fr')">Français</button>
+            <button class="lang-btn" onclick="setLanguage('de')">Deutsch</button>
+            <button class="lang-btn" onclick="setLanguage('it')">Italiano</button>
+            <button class="lang-btn" onclick="setLanguage('pt')">Português</button>
+            <button class="lang-btn" onclick="setLanguage('ru')">Русский</button>
+            <button class="lang-btn" onclick="setLanguage('ja')">日本語</button>
+            <button class="lang-btn" onclick="setLanguage('zh')">中文</button>
+            <button class="lang-btn" onclick="setLanguage('ko')">한국어</button>
+            <button class="lang-btn" onclick="setLanguage('ar')">العربية</button>
+            <button class="lang-btn" onclick="setLanguage('hi')">हिन्दी</button>
+        </div>
+    </div>
+
+    <div class="example-section">
+        <h2>Basic Modal with Localization</h2>
+        <p>This modal uses the currently selected language for all default texts.</p>
+        <button onclick="showBasicModal()">Show Basic Modal</button>
+        <div id="result1" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Confirmation with Localized Helper</h2>
+        <p>Helper methods automatically use localized strings.</p>
+        <button onclick="showConfirmation()">Show Confirmation</button>
+        <div id="result2" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Dangerous Action (Localized)</h2>
+        <p>Dangerous action modal with localized title and message.</p>
+        <button onclick="showDangerous()">Show Dangerous Action</button>
+        <div id="result3" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Working Time Violation (Localized)</h2>
+        <p>Working time violation modal with localized messages.</p>
+        <button onclick="showWorkingTime()">Show Working Time Violation</button>
+        <div id="result4" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Responsibility Confirmation (Localized)</h2>
+        <p>Responsibility confirmation with localized checkbox text.</p>
+        <button onclick="showResponsibility()">Show Responsibility Confirmation</button>
+        <div id="result5" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Custom Message with Localized Buttons</h2>
+        <p>Custom title and message, but buttons are still localized.</p>
+        <button onclick="showCustomWithLocalizedButtons()">Show Custom Modal</button>
+        <div id="result6" class="result"></div>
+    </div>
+
+    <div class="example-section">
+        <h2>Per-Modal Language</h2>
+        <p>You can specify a different language for a specific modal without changing the global language.</p>
+        <button onclick="showPerModalLanguage()">Show Modal in Spanish</button>
+        <div id="result7" class="result"></div>
+    </div>
+
+    <script src="../src/asyncModal.js"></script>
+    <script>
+        const langNames = {
+            en: 'English',
+            tr: 'Türkçe',
+            es: 'Español',
+            fr: 'Français',
+            de: 'Deutsch',
+            it: 'Italiano',
+            pt: 'Português',
+            ru: 'Русский',
+            ja: '日本語',
+            zh: '中文',
+            ko: '한국어',
+            ar: 'العربية',
+            hi: 'हिन्दी'
+        };
+
+        async function setLanguage(lang) {
+            await window.asyncModal.setLanguage(lang);
+            document.getElementById('currentLang').textContent = `${langNames[lang]} (${lang})`;
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        async function showBasicModal() {
+            const result = await window.asyncModal.show({
+                showCancel: true,
+                showContinue: true
+            });
+            document.getElementById('result1').textContent = `Result: ${result} (Language: ${window.asyncModal.currentLanguage})`;
+        }
+
+        async function showConfirmation() {
+            const result = await window.asyncModal.showConfirmation();
+            document.getElementById('result2').textContent = `Result: ${result}`;
+        }
+
+        async function showDangerous() {
+            const result = await window.asyncModal.showDangerousAction();
+            document.getElementById('result3').textContent = `Result: ${result}`;
+        }
+
+        async function showWorkingTime() {
+            const result = await window.asyncModal.showWorkingTimeViolation();
+            document.getElementById('result4').textContent = `Result: ${result}`;
+        }
+
+        async function showResponsibility() {
+            const result = await window.asyncModal.showConfirmationWithResponsibility();
+            document.getElementById('result5').textContent = `Result: ${result}`;
+        }
+
+        async function showCustomWithLocalizedButtons() {
+            const result = await window.asyncModal.show({
+                title: 'Custom Title',
+                message: 'This is a custom message, but buttons are localized.',
+                showCancel: true,
+                showContinue: true
+            });
+            document.getElementById('result6').textContent = `Result: ${result}`;
+        }
+
+        async function showPerModalLanguage() {
+            const result = await window.asyncModal.show({
+                language: 'es', // Spanish for this modal only
+                showCancel: true,
+                showContinue: true
+            });
+            document.getElementById('result7').textContent = `Result: ${result} (Modal was in Spanish, global language unchanged)`;
+        }
+    </script>
+</body>
+</html>
+

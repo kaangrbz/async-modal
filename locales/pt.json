@@ -1,0 +1,40 @@
+{
+  "defaults": {
+    "title": "Confirmação Necessária",
+    "message": "Tem certeza de que deseja continuar?",
+    "confirmationText": "Confirmo que aceito a responsabilidade por esta ação"
+  },
+  "buttons": {
+    "continue": "Continuar",
+    "cancel": "Cancelar",
+    "settings": "Ir para Configurações",
+    "help": "Ajuda",
+    "yes": "Sim",
+    "no": "Não",
+    "ok": "OK",
+    "close": "Fechar"
+  },
+  "titles": {
+    "confirmation": "Confirmação Necessária",
+    "dangerous": "Ação Perigosa",
+    "warning": "Aviso",
+    "info": "Informação",
+    "success": "Sucesso",
+    "error": "Erro",
+    "workingTimeViolation": "Fora do Horário de Trabalho",
+    "responsibility": "Confirmação de Responsabilidade Necessária"
+  },
+  "messages": {
+    "workingTimeViolation": "Você está atualmente fora do horário de trabalho. Tem certeza de que deseja continuar?",
+    "deleteConfirm": "Isso excluirá permanentemente este item. Esta ação não pode ser desfeita.",
+    "saveConfirm": "Deseja salvar suas alterações?",
+    "unsavedChanges": "Você tem alterações não salvas. Deseja salvá-las antes de sair?",
+    "sessionExpiring": "Sua sessão expirará em breve.",
+    "criticalAction": "Esta é uma ação crítica que requer confirmação."
+  },
+  "timeout": {
+    "seconds": "seg",
+    "expired": "Tempo esgotado"
+  }
+}
+

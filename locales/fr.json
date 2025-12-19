@@ -1,0 +1,40 @@
+{
+  "defaults": {
+    "title": "Confirmation Requise",
+    "message": "Êtes-vous sûr de vouloir continuer?",
+    "confirmationText": "Je confirme que j'accepte la responsabilité de cette action"
+  },
+  "buttons": {
+    "continue": "Continuer",
+    "cancel": "Annuler",
+    "settings": "Aller aux Paramètres",
+    "help": "Aide",
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "OK",
+    "close": "Fermer"
+  },
+  "titles": {
+    "confirmation": "Confirmation Requise",
+    "dangerous": "Action Dangereuse",
+    "warning": "Avertissement",
+    "info": "Information",
+    "success": "Succès",
+    "error": "Erreur",
+    "workingTimeViolation": "En Dehors des Heures de Travail",
+    "responsibility": "Confirmation de Responsabilité Requise"
+  },
+  "messages": {
+    "workingTimeViolation": "Vous êtes actuellement en dehors des heures de travail. Êtes-vous sûr de vouloir continuer?",
+    "deleteConfirm": "Cela supprimera définitivement cet élément. Cette action ne peut pas être annulée.",
+    "saveConfirm": "Voulez-vous enregistrer vos modifications?",
+    "unsavedChanges": "Vous avez des modifications non enregistrées. Voulez-vous les enregistrer avant de partir?",
+    "sessionExpiring": "Votre session expirera bientôt.",
+    "criticalAction": "Il s'agit d'une action critique qui nécessite une confirmation."
+  },
+  "timeout": {
+    "seconds": "sec",
+    "expired": "Temps écoulé"
+  }
+}
+

@@ -1,0 +1,40 @@
+{
+  "defaults": {
+    "title": "Confirmation Required",
+    "message": "Are you sure you want to proceed?",
+    "confirmationText": "I confirm that I accept responsibility for this action"
+  },
+  "buttons": {
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "settings": "Go to Settings",
+    "help": "Help",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "close": "Close"
+  },
+  "titles": {
+    "confirmation": "Confirmation Required",
+    "dangerous": "Dangerous Action",
+    "warning": "Warning",
+    "info": "Information",
+    "success": "Success",
+    "error": "Error",
+    "workingTimeViolation": "Outside Working Hours",
+    "responsibility": "Responsibility Confirmation Required"
+  },
+  "messages": {
+    "workingTimeViolation": "You are currently outside working hours. Are you sure you want to proceed?",
+    "deleteConfirm": "This will permanently delete this item. This action cannot be undone.",
+    "saveConfirm": "Do you want to save your changes?",
+    "unsavedChanges": "You have unsaved changes. Do you want to save them before leaving?",
+    "sessionExpiring": "Your session will expire soon.",
+    "criticalAction": "This is a critical action that requires confirmation."
+  },
+  "timeout": {
+    "seconds": "sec",
+    "expired": "Time expired"
+  }
+}
+

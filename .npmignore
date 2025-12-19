@@ -1,0 +1,39 @@
+# Development files
+examples/
+dist/
+*.log
+*.md
+!README.md
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build files
+node_modules/
+.cache/
+
+# Test files
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Config files
+.eslintrc*
+.prettierrc*
+tsconfig.json
+jest.config.js
+

@@ -1,0 +1,40 @@
+{
+  "defaults": {
+    "title": "需要确认",
+    "message": "您确定要继续吗？",
+    "confirmationText": "我确认我接受此操作的责任"
+  },
+  "buttons": {
+    "continue": "继续",
+    "cancel": "取消",
+    "settings": "前往设置",
+    "help": "帮助",
+    "yes": "是",
+    "no": "否",
+    "ok": "确定",
+    "close": "关闭"
+  },
+  "titles": {
+    "confirmation": "需要确认",
+    "dangerous": "危险操作",
+    "warning": "警告",
+    "info": "信息",
+    "success": "成功",
+    "error": "错误",
+    "workingTimeViolation": "工作时间外",
+    "responsibility": "需要责任确认"
+  },
+  "messages": {
+    "workingTimeViolation": "您当前在工作时间外。您确定要继续吗？",
+    "deleteConfirm": "这将永久删除此项目。此操作无法撤销。",
+    "saveConfirm": "您要保存更改吗？",
+    "unsavedChanges": "您有未保存的更改。离开前要保存吗？",
+    "sessionExpiring": "您的会话即将过期。",
+    "criticalAction": "这是一个需要确认的关键操作。"
+  },
+  "timeout": {
+    "seconds": "秒",
+    "expired": "时间已到"
+  }
+}
+
