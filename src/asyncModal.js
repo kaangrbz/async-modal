@@ -22,7 +22,37 @@ class AsyncModal {
         this.soundPath = null; // Configurable sound file path
         this.currentLanguage = options.language || 'en';
         this.locales = {}; // Loaded locale data
-        this.localePath = options.localePath || './locales';
+        this.darkTheme = options.darkTheme !== undefined ? options.darkTheme : this._detectDarkTheme();
+        
+        // Determine locale path dynamically
+        if (options.localePath) {
+            this.localePath = options.localePath;
+        } else {
+            // Try to detect the correct path based on script location
+            if (typeof document !== 'undefined') {
+                const scripts = document.getElementsByTagName('script');
+                let scriptPath = './locales'; // Default fallback
+                
+                // Find the asyncModal.js script
+                for (let i = 0; i < scripts.length; i++) {
+                    const src = scripts[i].src;
+                    if (src && src.includes('asyncModal.js')) {
+                        // Extract directory path
+                        const scriptDir = src.substring(0, src.lastIndexOf('/'));
+                        scriptPath = scriptDir + '/locales';
+                        break;
+                    }
+                }
+                
+                // If script is in src/, locales should be at ../locales
+                // If script is in examples/, locales should be at ../locales
+                // Try common paths
+                this.localePath = scriptPath;
+            } else {
+                this.localePath = './locales';
+            }
+        }
+        
         // Initialize with default English locale
         this._initDefaultLocale();
         // Load locale asynchronously if not English
@@ -31,6 +61,18 @@ class AsyncModal {
                 // Silently fall back to English if loading fails
             });
         }
+    }
+
+    /**
+     * Detects if dark theme should be used based on system preference
+     * @returns {boolean} - True if dark theme should be used
+     * @private
+     */
+    _detectDarkTheme() {
+        if (typeof window === 'undefined' || typeof window.matchMedia === 'undefined') {
+            return false;
+        }
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
 
     /**
@@ -97,10 +139,27 @@ class AsyncModal {
         try {
             // Try to load locale file
             if (typeof fetch !== 'undefined') {
-                const response = await fetch(`${this.localePath}/${lang}.json`);
-                if (response.ok) {
-                    this.locales[lang] = await response.json();
-                    return this.locales[lang];
+                // Try multiple possible paths
+                const possiblePaths = [
+                    `${this.localePath}/${lang}.json`,
+                    `../locales/${lang}.json`,
+                    `./locales/${lang}.json`,
+                    `locales/${lang}.json`
+                ];
+                
+                for (const path of possiblePaths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            this.locales[lang] = await response.json();
+                            // Update localePath to the working path
+                            this.localePath = path.substring(0, path.lastIndexOf('/'));
+                            return this.locales[lang];
+                        }
+                    } catch (e) {
+                        // Try next path
+                        continue;
+                    }
                 }
             }
         } catch (error) {
@@ -179,6 +238,7 @@ class AsyncModal {
      * @param {number} [options.autoDismissTimeoutSeconds=15] - Timeout duration in seconds (default: 15)
      * @param {string} [options.soundPath] - Custom sound file path (overrides default)
      * @param {string} [options.language] - Language code (overrides global language for this modal - highest priority)
+     * @param {boolean} [options.darkTheme] - Use dark theme for this modal (overrides global dark theme setting)
      * @returns {Promise<string>} - User's selection ('continue', 'cancel', 'settings', 'help', 'danger')
      */
     async show(options = {}) {
@@ -218,6 +278,7 @@ class AsyncModal {
                 autoDismissTimeoutSeconds: options.autoDismissTimeoutSeconds || 15,
                 soundPath: options.soundPath || this.soundPath,
                 language: modalLanguage,
+                darkTheme: options.darkTheme !== undefined ? options.darkTheme : this.darkTheme,
                 ...options
             };
 
@@ -325,9 +386,14 @@ class AsyncModal {
             `;
         }
 
+        // Determine theme class
+        const themeClass = config.darkTheme !== undefined 
+            ? (config.darkTheme ? 'dark-theme' : 'light-theme')
+            : (this.darkTheme ? 'dark-theme' : '');
+        
         return `
-            <div class="async-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="async-modal-title">
-                <div class="async-modal">
+            <div class="async-modal-overlay ${themeClass}" role="dialog" aria-modal="true" aria-labelledby="async-modal-title">
+                <div class="async-modal ${themeClass}">
                     <div class="async-modal-header">
                         <h3 class="async-modal-title" id="async-modal-title">
                             <div class="async-modal-icon async-modal-icon-${this.escapeHtml(config.icon)}" aria-hidden="true">
@@ -736,9 +802,15 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports.AsyncModal = AsyncModal;
 }
 
-// ES module export
-// Note: These exports will cause a syntax error in pure CommonJS environments
-// but are necessary for ES module support. Bundlers and modern Node.js handle this correctly.
-export default AsyncModal;
-export { AsyncModal };
+// ES module export support
+// Note: Direct ES module exports cause syntax errors in regular browser script tags
+// For ES module support, use bundlers (webpack, rollup, vite, etc.) or <script type="module">
+// Bundlers will automatically convert CommonJS exports to ES modules
+// 
+// For direct ES module usage, create a separate .mjs file or use a bundler
+// 
+// This file supports:
+// 1. Browser: window.asyncModal (global instance)
+// 2. CommonJS: require('async-modal')
+// 3. ES modules: Use bundlers or import from a bundled version
 

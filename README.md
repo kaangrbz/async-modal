@@ -15,6 +15,7 @@ A Promise-based modal system that returns user selection, with support for confi
 - ✅ Multiple module systems - ES modules, CommonJS, and global support
 - ✅ XSS protection - HTML escaping for user input
 - ✅ Internationalization (i18n) - Built-in support for 13+ languages
+- ✅ Dark theme support - Automatic dark mode detection and manual theme control
 
 ## Installation
 
@@ -114,6 +115,7 @@ const modal = new AsyncModal(options);
   - `language` (string, default: `'en'`) - Default language code
   - `localePath` (string, default: `'./locales'`) - Path to locale files
   - `soundPath` (string) - Default sound file path
+  - `darkTheme` (boolean, default: `auto-detect`) - Enable dark theme (auto-detects system preference if not specified)
 
 **Example:**
 
@@ -158,6 +160,7 @@ Shows a modal and returns a Promise that resolves with the user's selection.
   - `autoDismissTimeoutSeconds` (number, default: `15`) - Timeout duration in seconds
   - `soundPath` (string) - Custom sound file path
   - `language` (string) - Language code (overrides global language for this modal - highest priority)
+  - `darkTheme` (boolean) - Use dark theme for this modal (overrides global dark theme setting)
 
 **Returns:** `Promise<string>` - Resolves with: `'continue'`, `'cancel'`, `'settings'`, `'help'`, or `'danger'`
 
@@ -303,6 +306,34 @@ Sets the current language for the modal. Supported languages: `en`, `tr`, `es`, 
 await modal.setLanguage('tr'); // Turkish
 await modal.setLanguage('es'); // Spanish
 await modal.setLanguage('fr'); // French
+```
+
+##### `setDarkTheme(enabled)`
+
+Sets the dark theme preference globally.
+
+**Parameters:**
+
+- `enabled` (boolean) - Enable dark theme (`true`) or light theme (`false`)
+
+**Example:**
+
+```javascript
+modal.setDarkTheme(true);  // Enable dark theme
+modal.setDarkTheme(false); // Disable dark theme (use light theme)
+```
+
+##### `getDarkTheme()`
+
+Gets the current dark theme preference.
+
+**Returns:** `boolean` - `true` if dark theme is enabled, `false` otherwise
+
+**Example:**
+
+```javascript
+const isDark = modal.getDarkTheme();
+console.log('Dark theme enabled:', isDark);
 ```
 
 ##### `close(action)`
@@ -501,6 +532,53 @@ const result = await modal.show({
   // Buttons will be in German: "Fortfahren", "Abbrechen", etc.
 });
 ```
+
+## Dark Theme
+
+The modal supports dark theme with automatic system preference detection. You can control the theme globally or per modal.
+
+### Automatic Dark Theme Detection
+
+By default, the modal automatically detects your system's color scheme preference:
+
+```javascript
+// Automatically uses dark theme if system preference is dark
+const modal = new AsyncModal();
+const result = await modal.show({
+  title: 'Confirm Action',
+  message: 'This modal will use dark theme if your system is set to dark mode'
+});
+```
+
+### Manual Dark Theme Control
+
+You can manually control the theme:
+
+```javascript
+// Set dark theme globally
+const modal = new AsyncModal({ darkTheme: true });
+modal.setDarkTheme(true);  // Or change it later
+
+// Use dark theme for a specific modal only
+const result = await modal.show({
+  title: 'Dark Modal',
+  message: 'This modal uses dark theme',
+  darkTheme: true  // Overrides global setting
+});
+
+// Use light theme for a specific modal
+const result2 = await modal.show({
+  title: 'Light Modal',
+  message: 'This modal uses light theme',
+  darkTheme: false  // Overrides global setting
+});
+```
+
+### Theme Priority
+
+1. **Function parameter** (`options.darkTheme` in `show()` method) - Highest priority
+2. **Global setting** (set via `setDarkTheme()` or constructor) - Medium priority
+3. **System preference** (auto-detected via `prefers-color-scheme`) - Default fallback
 
 ## Styling
 

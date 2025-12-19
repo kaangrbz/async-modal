@@ -3,161 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Async Modal - Examples</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 50px;
-        }
-        header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-        .examples-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        .example-card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .example-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
-        .example-card h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-        .example-card p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        .example-card a {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: opacity 0.3s ease;
-        }
-        .example-card a:hover {
-            opacity: 0.9;
-        }
-        .features {
-            background: white;
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-top: 40px;
-        }
-        .features h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 2em;
-        }
-        .features-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            list-style: none;
-        }
-        .features-list li {
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-        .features-list li strong {
-            color: #667eea;
-        }
-        footer {
-            text-align: center;
-            color: white;
-            margin-top: 50px;
-            opacity: 0.8;
-        }
-    </style>
+    <title>Async Modal - Examples & Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🚀 Async Modal</h1>
-            <p>A Promise-based modal system for modern web applications</p>
+            <div class="header-content">
+                <h1><i class="fas fa-layer-group"></i> Async Modal</h1>
+                <p class="subtitle">A Promise-based modal system for modern web applications</p>
+                <div class="badge-container">
+                    <span class="badge"><i class="fas fa-check-circle"></i> Production Ready</span>
+                    <span class="badge"><i class="fas fa-globe"></i> 13+ Languages</span>
+                    <span class="badge"><i class="fas fa-mobile-alt"></i> Responsive</span>
+                    <span class="badge"><i class="fas fa-shield-alt"></i> XSS Protected</span>
+                </div>
+            </div>
         </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-language"></i></div>
+                <div class="stat-number">13+</div>
+                <div class="stat-label">Languages</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-code"></i></div>
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Type Safe</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-mobile-alt"></i></div>
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Responsive</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Dependencies</div>
+            </div>
+        </div>
 
         <div class="examples-grid">
             <div class="example-card">
-                <h2>📝 Basic Examples</h2>
-                <p>Learn the fundamentals of async-modal with simple examples including basic confirmations, custom messages, and different icon types.</p>
-                <a href="basic.html">View Basic Examples →</a>
+                <div class="example-icon"><i class="fas fa-book-open"></i></div>
+                <h2>Basic Examples</h2>
+                <p>Learn the fundamentals of async-modal with simple examples including basic confirmations, custom messages, and different icon types. Perfect for getting started quickly.</p>
+                <a href="basic.html">
+                    View Examples
+                    <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
 
             <div class="example-card">
-                <h2>⚡ Advanced Examples</h2>
-                <p>Explore advanced features like confirmation checkboxes, auto-dismiss timeouts, multiple buttons, and combined features.</p>
-                <a href="advanced.html">View Advanced Examples →</a>
+                <div class="example-icon"><i class="fas fa-rocket"></i></div>
+                <h2>Advanced Examples</h2>
+                <p>Explore advanced features like confirmation checkboxes, auto-dismiss timeouts, multiple buttons, and combined features. Master all the powerful capabilities.</p>
+                <a href="advanced.html">
+                    View Examples
+                    <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
 
             <div class="example-card">
-                <h2>🌍 Internationalization</h2>
-                <p>See how async-modal supports 13+ languages with built-in localization for all default messages, buttons, and titles.</p>
-                <a href="i18n.html">View i18n Examples →</a>
+                <div class="example-icon"><i class="fas fa-globe-americas"></i></div>
+                <h2>Internationalization</h2>
+                <p>See how async-modal supports 13+ languages with built-in localization for all default messages, buttons, and titles. Test all language options live.</p>
+                <a href="i18n.html">
+                    View Examples
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="code-examples">
+            <div class="code-examples-header">
+                <h2><i class="fas fa-code"></i> Usage Examples</h2>
+                <p>Get started with async-modal in your favorite framework or environment</p>
+            </div>
+
+            <div class="code-tabs">
+                <button class="code-tab active" onclick="showCodeTab('cdn')">
+                    <i class="fas fa-globe"></i> CDN
+                </button>
+                <button class="code-tab" onclick="showCodeTab('react')">
+                    <i class="fab fa-react"></i> React
+                </button>
+                <button class="code-tab" onclick="showCodeTab('electron')">
+                    <i class="fab fa-electron"></i> Electron.js
+                </button>
+                <button class="code-tab" onclick="showCodeTab('vue')">
+                    <i class="fab fa-vuejs"></i> Vue.js
+                </button>
+                <button class="code-tab" onclick="showCodeTab('node')">
+                    <i class="fab fa-node-js"></i> Node.js
+                </button>
+            </div>
+
+            <div class="code-block-container">
+                <!-- CDN Example -->
+                <div id="code-cdn" class="code-block active">
+                    <button class="copy-btn" onclick="copyCode('cdn')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"&gt;
+  &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/async-modal@latest/src/async-modal.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;script src="https://cdn.jsdelivr.net/npm/async-modal@latest/src/asyncModal.js"&gt;&lt;/script&gt;
+  &lt;script&gt;
+    <span class="keyword">async</span> <span class="function">function</span> showModal() {
+      <span class="keyword">const</span> result = <span class="keyword">await</span> window.asyncModal.show({
+        title: <span class="string">'Confirm Action'</span>,
+        message: <span class="string">'Are you sure you want to proceed?'</span>,
+        showCancel: <span class="keyword">true</span>,
+        showContinue: <span class="keyword">true</span>
+      });
+      
+      <span class="keyword">if</span> (result === <span class="string">'continue'</span>) {
+        console.log(<span class="string">'User confirmed'</span>);
+      }
+    }
+    
+    showModal();
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+
+                <!-- React Example -->
+                <div id="code-react" class="code-block">
+                    <button class="copy-btn" onclick="copyCode('react')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre><code><span class="comment">// Install: yarn add async-modal</span>
+
+<span class="keyword">import</span> React, { useEffect } <span class="keyword">from</span> <span class="string">'react'</span>;
+<span class="keyword">import</span> AsyncModal <span class="keyword">from</span> <span class="string">'async-modal'</span>;
+<span class="keyword">import</span> <span class="string">'async-modal/src/async-modal.css'</span>;
+<span class="keyword">import</span> <span class="string">'@fortawesome/fontawesome-free/css/all.min.css'</span>;
+
+<span class="function">function</span> App() {
+  <span class="keyword">const</span> modal = <span class="keyword">new</span> AsyncModal();
+  
+  <span class="function">const</span> handleDelete = <span class="keyword">async</span> () => {
+    <span class="keyword">const</span> result = <span class="keyword">await</span> modal.show({
+      title: <span class="string">'Delete Item'</span>,
+      message: <span class="string">'This action cannot be undone.'</span>,
+      icon: <span class="string">'danger'</span>,
+      showCancel: <span class="keyword">true</span>,
+      showContinue: <span class="keyword">true</span>
+    });
+    
+    <span class="keyword">if</span> (result === <span class="string">'continue'</span>) {
+      <span class="comment">// Delete logic here</span>
+      console.log(<span class="string">'Item deleted'</span>);
+    }
+  };
+  
+  <span class="keyword">return</span> (
+    &lt;button onClick={handleDelete}&gt;Delete&lt;/button&gt;
+  );
+}
+
+<span class="keyword">export</span> <span class="keyword">default</span> App;</code></pre>
+                </div>
+
+                <!-- Electron.js Example -->
+                <div id="code-electron" class="code-block">
+                    <button class="copy-btn" onclick="copyCode('electron')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre><code><span class="comment">// Install: yarn add async-modal</span>
+<span class="comment">// In your Electron renderer process (renderer.js)</span>
+
+<span class="keyword">const</span> { ipcRenderer } = <span class="keyword">require</span>(<span class="string">'electron'</span>);
+<span class="keyword">const</span> AsyncModal = <span class="keyword">require</span>(<span class="string">'async-modal'</span>);
+<span class="keyword">require</span>(<span class="string">'async-modal/src/async-modal.css'</span>);
+
+<span class="keyword">const</span> modal = <span class="keyword">new</span> AsyncModal();
+
+<span class="function">async function</span> confirmExit() {
+  <span class="keyword">const</span> result = <span class="keyword">await</span> modal.show({
+    title: <span class="string">'Exit Application'</span>,
+    message: <span class="string">'Are you sure you want to exit?'</span>,
+    showCancel: <span class="keyword">true</span>,
+    showContinue: <span class="keyword">true</span>,
+    icon: <span class="string">'warning'</span>
+  });
+  
+  <span class="keyword">if</span> (result === <span class="string">'continue'</span>) {
+    ipcRenderer.send(<span class="string">'app-quit'</span>);
+  }
+}
+
+<span class="comment">// Listen for window close event</span>
+window.addEventListener(<span class="string">'beforeunload'</span>, (e) => {
+  e.preventDefault();
+  confirmExit();
+});</code></pre>
+                </div>
+
+                <!-- Vue.js Example -->
+                <div id="code-vue" class="code-block">
+                    <button class="copy-btn" onclick="copyCode('vue')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre><code><span class="comment">// Install: yarn add async-modal</span>
+
+&lt;template&gt;
+  &lt;button @click="handleSave"&gt;Save Changes&lt;/button&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+<span class="keyword">import</span> AsyncModal <span class="keyword">from</span> <span class="string">'async-modal'</span>;
+<span class="keyword">import</span> <span class="string">'async-modal/src/async-modal.css'</span>;
+<span class="keyword">import</span> <span class="string">'@fortawesome/fontawesome-free/css/all.min.css'</span>;
+
+<span class="keyword">export default</span> {
+  <span class="function">methods</span>: {
+    <span class="keyword">async</span> <span class="function">handleSave</span>() {
+      <span class="keyword">const</span> modal = <span class="keyword">new</span> AsyncModal();
+      
+      <span class="keyword">const</span> result = <span class="keyword">await</span> modal.show({
+        title: <span class="string">'Save Changes'</span>,
+        message: <span class="string">'Do you want to save your changes?'</span>,
+        showCancel: <span class="keyword">true</span>,
+        showContinue: <span class="keyword">true</span>,
+        icon: <span class="string">'question'</span>
+      });
+      
+      <span class="keyword">if</span> (result === <span class="string">'continue'</span>) {
+        <span class="comment">// Save logic here</span>
+        <span class="keyword">this</span>.saveData();
+      }
+    }
+  }
+}
+&lt;/script&gt;</code></pre>
+                </div>
+
+                <!-- Node.js Example -->
+                <div id="code-node" class="code-block">
+                    <button class="copy-btn" onclick="copyCode('node')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre><code><span class="comment">// Install: yarn add async-modal</span>
+<span class="comment">// Note: Requires a DOM environment (jsdom, puppeteer, etc.)</span>
+
+<span class="keyword">const</span> AsyncModal = <span class="keyword">require</span>(<span class="string">'async-modal'</span>);
+<span class="keyword">const</span> { JSDOM } = <span class="keyword">require</span>(<span class="string">'jsdom'</span>);
+
+<span class="comment">// Setup DOM environment</span>
+<span class="keyword">const</span> dom = <span class="keyword">new</span> JSDOM(<span class="string">'&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;'</span>);
+global.window = dom.window;
+global.document = dom.window.document;
+
+<span class="keyword">const</span> modal = <span class="keyword">new</span> AsyncModal();
+
+<span class="function">async function</span> showConfirmation() {
+  <span class="keyword">const</span> result = <span class="keyword">await</span> modal.show({
+    title: <span class="string">'Confirm Action'</span>,
+    message: <span class="string">'Proceed with this action?'</span>,
+    showCancel: <span class="keyword">true</span>,
+    showContinue: <span class="keyword">true</span>
+  });
+  
+  console.log(<span class="string">'User selected:'</span>, result);
+  <span class="keyword">return</span> result;
+}
+
+showConfirmation();</code></pre>
+                </div>
             </div>
         </div>
 
         <div class="features">
-            <h2>✨ Key Features</h2>
-            <ul class="features-list">
-                <li><strong>Promise-based API</strong> - Use async/await for clean code</li>
-                <li><strong>Multiple Button Types</strong> - Cancel, Continue, Settings, Help, Danger</li>
-                <li><strong>Confirmation Checkbox</strong> - Require user confirmation before proceeding</li>
-                <li><strong>Auto-Dismiss Timeout</strong> - Automatically close modal after specified time</li>
-                <li><strong>Customizable Icons</strong> - Warning, danger, info, success, question</li>
-                <li><strong>Sound Notifications</strong> - Optional sound alerts</li>
-                <li><strong>Responsive Design</strong> - Works on mobile and desktop</li>
-                <li><strong>Accessible</strong> - ARIA labels and keyboard navigation support</li>
-                <li><strong>Multiple Module Systems</strong> - ES modules, CommonJS, and global support</li>
-                <li><strong>XSS Protection</strong> - HTML escaping for user input</li>
-                <li><strong>Internationalization</strong> - Built-in support for 13+ languages (en, tr, es, fr, de, it, pt, ru, ja, zh, ko, ar, hi)</li>
+            <div class="features-header">
+                <h2><i class="fas fa-star"></i> Key Features</h2>
+                <p>Everything you need for modern modal dialogs</p>
+            </div>
+            <ul class="features-grid">
+                <li class="feature-item">
+                    <strong><i class="fas fa-code"></i> Promise-based API</strong>
+                    <span>Use async/await for clean, readable code</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-mouse-pointer"></i> Multiple Button Types</strong>
+                    <span>Cancel, Continue, Settings, Help, Danger buttons</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-check-square"></i> Confirmation Checkbox</strong>
+                    <span>Require user confirmation before proceeding</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-clock"></i> Auto-Dismiss Timeout</strong>
+                    <span>Automatically close modal after specified time</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-palette"></i> Customizable Icons</strong>
+                    <span>Warning, danger, info, success, question icons</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-volume-up"></i> Sound Notifications</strong>
+                    <span>Optional sound alerts for better UX</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-mobile-alt"></i> Responsive Design</strong>
+                    <span>Works perfectly on mobile and desktop</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-universal-access"></i> Accessible</strong>
+                    <span>ARIA labels and keyboard navigation support</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-puzzle-piece"></i> Multiple Module Systems</strong>
+                    <span>ES modules, CommonJS, and global support</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-shield-alt"></i> XSS Protection</strong>
+                    <span>HTML escaping for user input security</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-language"></i> Internationalization</strong>
+                    <span>Built-in support for 13+ languages</span>
+                </li>
+                <li class="feature-item">
+                    <strong><i class="fas fa-bolt"></i> Zero Dependencies</strong>
+                    <span>Lightweight and fast (except Font Awesome)</span>
+                </li>
             </ul>
         </div>
 
         <footer>
-            <p>Install with: <code style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 4px;">yarn add async-modal</code></p>
-            <p style="margin-top: 10px;">MIT License | View documentation in README.md</p>
+            <div class="footer-content">
+                <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Get Started Now</h3>
+                <div class="install-code">
+                    <i class="fas fa-terminal"></i> yarn add async-modal
+                </div>
+                <p style="margin-top: 20px; opacity: 0.9;">MIT License | View full documentation in README.md</p>
+                <div class="footer-links">
+                    <a href="https://github.com/kaangrbz/async-modal" target="_blank">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="https://github.com/kaangrbz/async-modal/issues" target="_blank">
+                        <i class="fas fa-bug"></i> Report Issue
+                    </a>
+                    <a href="https://github.com/kaangrbz/async-modal#readme" target="_blank">
+                        <i class="fas fa-book"></i> Documentation
+                    </a>
+                </div>
+            </div>
         </footer>
     </div>
+
+    <script>
+        function showCodeTab(tabName) {
+            // Hide all code blocks
+            document.querySelectorAll('.code-block').forEach(block => {
+                block.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.code-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected code block
+            document.getElementById(`code-${tabName}`).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.closest('.code-tab').classList.add('active');
+        }
+
+        function copyCode(tabName) {
+            const codeBlock = document.getElementById(`code-${tabName}`);
+            const code = codeBlock.querySelector('code').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target.closest('.copy-btn');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+    </script>
 </body>
 </html>
-
