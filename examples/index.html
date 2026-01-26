@@ -87,19 +87,16 @@
                     <button class="copy-btn" onclick="copyCode('cdn')">
                         <i class="fas fa-copy"></i> Copy
                     </button>
-                    <pre><code><span class="comment">// En kolay kullanım: Script tag ile (ES module desteği gerekmez)</span>
-&lt;!DOCTYPE html&gt;
+                    <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
   &lt;!-- CSS is automatically loaded, manual link is optional --&gt;
   &lt;!-- &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/async-modal@latest/src/async-modal.css"&gt; --&gt;
 &lt;/head&gt;
 &lt;body&gt;
-  <span class="comment">&lt;!-- Script tag ile yükle - window.asyncModal otomatik olarak kullanılabilir --&gt;</span>
   &lt;script src="https://cdn.jsdelivr.net/npm/async-modal@latest/src/asyncModal.js"&gt;&lt;/script&gt;
   &lt;script&gt;
     <span class="keyword">async</span> <span class="function">function</span> showModal() {
-      <span class="comment">// window.asyncModal otomatik olarak oluşturulur</span>
       <span class="keyword">const</span> result = <span class="keyword">await</span> window.asyncModal.show({
         title: <span class="string">'Confirm Action'</span>,
         message: <span class="string">'Are you sure you want to proceed?'</span>,
@@ -124,7 +121,6 @@
                         <i class="fas fa-copy"></i> Copy
                     </button>
                     <pre><code><span class="comment">// Install: yarn add async-modal</span>
-<span class="comment">// Not: Vite kullanıyorsanız vite.config.js dosyası oluşturun (CommonJS desteği için)</span>
 
 <span class="keyword">import</span> React, { useEffect } <span class="keyword">from</span> <span class="string">'react'</span>;
 <span class="keyword">import</span> AsyncModal <span class="keyword">from</span> <span class="string">'async-modal'</span>;
@@ -198,7 +194,6 @@ window.addEventListener(<span class="string">'beforeunload'</span>, (e) => {
                         <i class="fas fa-copy"></i> Copy
                     </button>
                     <pre><code><span class="comment">// Install: yarn add async-modal</span>
-<span class="comment">// Not: Vite kullanıyorsanız vite.config.js dosyası oluşturun (CommonJS desteği için)</span>
 
 &lt;template&gt;
   &lt;button @click="handleSave"&gt;Save Changes&lt;/button&gt;
