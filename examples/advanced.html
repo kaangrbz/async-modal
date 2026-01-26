@@ -153,6 +153,84 @@
             display: none;
         }
 
+        .settings-panel {
+            background: var(--bg-card);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+        }
+
+        .settings-panel h3 {
+            color: var(--primary-light);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-group label {
+            display: block;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .settings-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .settings-btn {
+            background: rgba(14, 165, 233, 0.2);
+            color: var(--primary-light);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: rgba(14, 165, 233, 0.3);
+            border-color: var(--primary);
+        }
+
+        .settings-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
+        }
+
+        .current-settings {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+
+        .current-settings strong {
+            color: var(--primary-light);
+        }
+
         @media (max-width: 768px) {
             header h1 {
                 font-size: 2rem;
@@ -182,6 +260,45 @@
             </h1>
             <p>Explore advanced features and powerful capabilities</p>
         </header>
+
+        <div class="settings-panel">
+            <h3><i class="fas fa-cog"></i> Default Settings</h3>
+            <div class="settings-group">
+                <label><i class="fas fa-palette"></i> Theme</label>
+                <div class="settings-buttons">
+                    <button class="settings-btn" onclick="setDefaultTheme('light', this)">
+                        <i class="fas fa-sun"></i> Light
+                    </button>
+                    <button class="settings-btn" onclick="setDefaultTheme('dark', this)">
+                        <i class="fas fa-moon"></i> Dark
+                    </button>
+                    <button class="settings-btn" onclick="setDefaultTheme('auto', this)">
+                        <i class="fas fa-adjust"></i> Auto
+                    </button>
+                </div>
+            </div>
+            <div class="settings-group">
+                <label><i class="fas fa-language"></i> Language</label>
+                <div class="settings-buttons">
+                    <button class="settings-btn" onclick="setDefaultLanguage('en', this)">English</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('tr', this)">Türkçe</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('es', this)">Español</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('fr', this)">Français</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('de', this)">Deutsch</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('it', this)">Italiano</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('pt', this)">Português</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('ru', this)">Русский</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('ja', this)">日本語</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('zh', this)">中文</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('ko', this)">한국어</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('ar', this)">العربية</button>
+                    <button class="settings-btn" onclick="setDefaultLanguage('hi', this)">हिन्दी</button>
+                </div>
+            </div>
+            <div class="current-settings">
+                <strong>Current Settings:</strong> Theme: <span id="currentTheme">light</span> | Language: <span id="currentLanguage">en</span>
+            </div>
+        </div>
         
         <div class="example-section">
             <h2><i class="fas fa-check-square"></i> Confirmation Checkbox</h2>
@@ -256,6 +373,104 @@
 
     <script src="../src/asyncModal.js"></script>
     <script>
+        // Set locale path for examples directory
+        if (window.asyncModal) {
+            window.asyncModal.localePath = '../locales';
+        }
+
+        const langNames = {
+            en: 'English',
+            tr: 'Türkçe',
+            es: 'Español',
+            fr: 'Français',
+            de: 'Deutsch',
+            it: 'Italiano',
+            pt: 'Português',
+            ru: 'Русский',
+            ja: '日本語',
+            zh: '中文',
+            ko: '한국어',
+            ar: 'العربية',
+            hi: 'हिन्दी'
+        };
+
+        function setDefaultTheme(theme, button) {
+            window.asyncModal.setTheme(theme);
+            document.getElementById('currentTheme').textContent = theme;
+            
+            // Update active button - remove active from all theme buttons
+            const settingsPanel = button.closest('.settings-panel');
+            if (settingsPanel) {
+                const themeGroup = settingsPanel.querySelectorAll('.settings-group')[0];
+                if (themeGroup) {
+                    themeGroup.querySelectorAll('.settings-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                }
+            }
+            button.classList.add('active');
+        }
+
+        async function setDefaultLanguage(lang, button) {
+            await window.asyncModal.setLanguage(lang);
+            document.getElementById('currentLanguage').textContent = lang;
+            
+            // Update active button - remove active from all language buttons
+            const settingsPanel = button.closest('.settings-panel');
+            if (settingsPanel) {
+                const languageGroup = settingsPanel.querySelectorAll('.settings-group')[1];
+                if (languageGroup) {
+                    languageGroup.querySelectorAll('.settings-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                }
+            }
+            button.classList.add('active');
+        }
+
+        // Initialize current settings display
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentTheme').textContent = window.asyncModal.getTheme();
+            document.getElementById('currentLanguage').textContent = window.asyncModal.currentLanguage;
+            
+            // Set active theme button
+            const theme = window.asyncModal.getTheme();
+            const settingsPanel = document.querySelector('.settings-panel');
+            if (settingsPanel) {
+                const themeGroup = settingsPanel.querySelectorAll('.settings-group')[0];
+                if (themeGroup) {
+                    // Remove active from all theme buttons first
+                    themeGroup.querySelectorAll('.settings-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    // Add active to matching button
+                    themeGroup.querySelectorAll('.settings-btn').forEach(btn => {
+                        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${theme}'`)) {
+                            btn.classList.add('active');
+                        }
+                    });
+                }
+            }
+            
+            // Set active language button
+            const lang = window.asyncModal.currentLanguage;
+            if (settingsPanel) {
+                const languageGroup = settingsPanel.querySelectorAll('.settings-group')[1];
+                if (languageGroup) {
+                    // Remove active from all language buttons first
+                    languageGroup.querySelectorAll('.settings-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    // Add active to matching button
+                    languageGroup.querySelectorAll('.settings-btn').forEach(btn => {
+                        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${lang}'`)) {
+                            btn.classList.add('active');
+                        }
+                    });
+                }
+            }
+        });
+
         async function showWithCheckbox() {
             const result = await window.asyncModal.show({
                 title: 'Delete Account',
@@ -275,8 +490,7 @@
                 message: 'Your session will expire in 10 seconds. Click Cancel to extend your session.',
                 showCancel: true,
                 showContinue: false,
-                autoDismissTimeout: true,
-                autoDismissTimeoutSeconds: 10,
+                timeout: 10,
                 cancelButtonText: 'Extend Session'
             });
             document.getElementById('result2').textContent = `Result: ${result} (auto-closed if timeout expired)`;
@@ -350,8 +564,7 @@
                 showHelp: true,
                 requireConfirmation: true,
                 confirmationText: 'I understand the risks and accept responsibility',
-                autoDismissTimeout: true,
-                autoDismissTimeoutSeconds: 15,
+                timeout: 15,
                 icon: 'warning'
             });
             document.getElementById('result7').textContent = `Result: ${result}`;

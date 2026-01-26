@@ -50,7 +50,8 @@ npm install async-modal
 <html>
 <head>
   <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.min.css">
-  <link rel="stylesheet" href="node_modules/async-modal/src/async-modal.css">
+  <!-- CSS is automatically loaded, manual link is optional -->
+  <!-- <link rel="stylesheet" href="node_modules/async-modal/src/async-modal.css"> -->
 </head>
 <body>
   <script src="node_modules/async-modal/src/asyncModal.js"></script>
@@ -80,7 +81,8 @@ npm install async-modal
 
 ```javascript
 import AsyncModal from 'async-modal';
-import 'async-modal/src/async-modal.css';
+// CSS is automatically loaded, manual import is optional
+// import 'async-modal/src/async-modal.css';
 
 const modal = new AsyncModal();
 
@@ -97,7 +99,8 @@ const result = await modal.show({
 
 ```javascript
 const AsyncModal = require('async-modal');
-require('async-modal/src/async-modal.css');
+// CSS is automatically loaded, manual import is optional
+// require('async-modal/src/async-modal.css');
 
 const modal = new AsyncModal();
 
@@ -125,21 +128,28 @@ const modal = new AsyncModal(options);
   - `language` (string, default: `'en'`) - Default language code
   - `localePath` (string, default: `'./locales'`) - Path to locale files
   - `soundPath` (string) - Default sound file path
-  - `darkTheme` (boolean, default: `auto-detect`) - Enable dark theme (auto-detects system preference if not specified)
+  - `theme` (string, default: `'light'`) - Global theme: `'dark'`, `'light'`, or `'auto'` (auto-detects system preference)
+  - `timeout` (number, optional) - Global default timeout in seconds for all modals (0 or undefined to disable)
 
 **Example:**
 
 ```javascript
-// Default (English)
+// Default (English, light theme)
 const modal = new AsyncModal();
 
 // With Turkish as default language
 const modal = new AsyncModal({ language: 'tr' });
 
-// With custom locale path
+// With custom locale path and theme
 const modal = new AsyncModal({ 
   language: 'es',
-  localePath: './custom-locales'
+  localePath: './custom-locales',
+  theme: 'dark' // or 'light' or 'auto'
+});
+
+// With global timeout
+const modal = new AsyncModal({ 
+  timeout: 30 // All modals will have 30 second timeout by default
 });
 ```
 
@@ -166,11 +176,13 @@ Shows a modal and returns a Promise that resolves with the user's selection.
   - `confirmButtonText` (string, default: `'Continue'`) - Confirm button text
   - `cancelButtonText` (string, default: `'Cancel'`) - Cancel button text
   - `playSound` (boolean, default: `false`) - Play notification sound
-  - `autoDismissTimeout` (boolean, default: `false`) - Enable auto dismiss timeout
-  - `autoDismissTimeoutSeconds` (number, default: `15`) - Timeout duration in seconds
+  - `timeout` (number, optional) - Timeout duration in seconds (0 or undefined to disable, overrides global timeout)
+  - `autoDismissTimeout` (boolean, deprecated) - [DEPRECATED] Use `timeout` instead
+  - `autoDismissTimeoutSeconds` (number, deprecated) - [DEPRECATED] Use `timeout` instead
   - `soundPath` (string) - Custom sound file path
   - `language` (string) - Language code (overrides global language for this modal - highest priority)
-  - `darkTheme` (boolean) - Use dark theme for this modal (overrides global dark theme setting)
+  - `theme` (string) - Theme for this modal: `'dark'`, `'light'`, or `'auto'` (overrides global theme setting)
+  - `darkTheme` (boolean, deprecated) - [DEPRECATED] Use `theme` instead
 
 **Returns:** `Promise<string>` - Resolves with: `'continue'`, `'cancel'`, `'settings'`, `'help'`, or `'danger'`
 
@@ -185,8 +197,7 @@ const result = await modal.show({
   requireConfirmation: true,
   confirmationText: 'I understand this action is irreversible',
   icon: 'danger',
-  autoDismissTimeout: true,
-  autoDismissTimeoutSeconds: 30
+  timeout: 30 // 30 seconds timeout
 });
 ```
 
@@ -318,32 +329,48 @@ await modal.setLanguage('es'); // Spanish
 await modal.setLanguage('fr'); // French
 ```
 
-##### `setDarkTheme(enabled)`
+##### `setTheme(theme)`
 
-Sets the dark theme preference globally.
+Sets the global theme preference.
 
 **Parameters:**
 
-- `enabled` (boolean) - Enable dark theme (`true`) or light theme (`false`)
+- `theme` (string) - Theme value: `'dark'`, `'light'`, or `'auto'`
 
 **Example:**
 
 ```javascript
-modal.setDarkTheme(true);  // Enable dark theme
-modal.setDarkTheme(false); // Disable dark theme (use light theme)
+modal.setTheme('dark');  // Enable dark theme
+modal.setTheme('light'); // Use light theme
+modal.setTheme('auto');  // Auto-detect system preference
 ```
 
-##### `getDarkTheme()`
+##### `getTheme()`
 
-Gets the current dark theme preference.
+Gets the current global theme preference.
 
-**Returns:** `boolean` - `true` if dark theme is enabled, `false` otherwise
+**Returns:** `string` - Current theme: `'dark'`, `'light'`, or `'auto'`
 
 **Example:**
 
 ```javascript
-const isDark = modal.getDarkTheme();
-console.log('Dark theme enabled:', isDark);
+const theme = modal.getTheme();
+console.log('Current theme:', theme);
+```
+
+##### `setTimeout(seconds)`
+
+Sets the global default timeout for all modals.
+
+**Parameters:**
+
+- `seconds` (number) - Timeout duration in seconds (0 or null to disable)
+
+**Example:**
+
+```javascript
+modal.setTimeout(30); // Set 30 second timeout for all modals
+modal.setTimeout(0);  // Disable timeout
 ```
 
 ##### `close(action)`
@@ -396,8 +423,7 @@ const result = await modal.show({
 const result = await modal.show({
   title: 'Session Expiring',
   message: 'Your session will expire in 30 seconds.',
-  autoDismissTimeout: true,
-  autoDismissTimeoutSeconds: 30,
+  timeout: 30, // 30 seconds timeout
   showCancel: true
 });
 
@@ -547,48 +573,79 @@ const result = await modal.show({
 
 The modal supports dark theme with automatic system preference detection. You can control the theme globally or per modal.
 
+### Theme Options
+
+The theme can be set to:
+- `'light'` - Always use light theme (default)
+- `'dark'` - Always use dark theme
+- `'auto'` - Automatically detect system preference
+
 ### Automatic Dark Theme Detection
 
-By default, the modal automatically detects your system's color scheme preference:
+Use `'auto'` theme to automatically detect your system's color scheme preference:
 
 ```javascript
 // Automatically uses dark theme if system preference is dark
-const modal = new AsyncModal();
+const modal = new AsyncModal({ theme: 'auto' });
 const result = await modal.show({
   title: 'Confirm Action',
   message: 'This modal will use dark theme if your system is set to dark mode'
 });
 ```
 
-### Manual Dark Theme Control
+### Manual Theme Control
 
 You can manually control the theme:
 
 ```javascript
 // Set dark theme globally
-const modal = new AsyncModal({ darkTheme: true });
-modal.setDarkTheme(true);  // Or change it later
+const modal = new AsyncModal({ theme: 'dark' });
+modal.setTheme('dark');  // Or change it later
 
 // Use dark theme for a specific modal only
 const result = await modal.show({
   title: 'Dark Modal',
   message: 'This modal uses dark theme',
-  darkTheme: true  // Overrides global setting
+  theme: 'dark'  // Overrides global setting
 });
 
 // Use light theme for a specific modal
 const result2 = await modal.show({
   title: 'Light Modal',
   message: 'This modal uses light theme',
-  darkTheme: false  // Overrides global setting
+  theme: 'light'  // Overrides global setting
+});
+
+// Use auto theme for a specific modal
+const result3 = await modal.show({
+  title: 'Auto Modal',
+  message: 'This modal uses system preference',
+  theme: 'auto'  // Overrides global setting
 });
 ```
 
 ### Theme Priority
 
-1. **Function parameter** (`options.darkTheme` in `show()` method) - Highest priority
-2. **Global setting** (set via `setDarkTheme()` or constructor) - Medium priority
-3. **System preference** (auto-detected via `prefers-color-scheme`) - Default fallback
+1. **Function parameter** (`options.theme` in `show()` method) - Highest priority
+2. **Global setting** (set via `setTheme()` or constructor) - Medium priority
+3. **Default** (`'light'`) - Default fallback
+
+## CSS Auto-Loading
+
+The CSS file is automatically loaded when you import or require the JavaScript module. You don't need to manually import the CSS file in most cases.
+
+**Manual CSS import is optional:**
+
+```javascript
+// CSS is automatically loaded, this is optional
+import 'async-modal/src/async-modal.css';
+```
+
+The auto-loading works in:
+- Browser script tags
+- ES modules
+- CommonJS
+- NPM package installations
 
 ## Styling
 
@@ -627,6 +684,19 @@ MIT
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Changelog
+
+### 1.0.3
+
+- **Breaking Change:** Theme API updated: `darkTheme: boolean` → `theme: 'dark' | 'light' | 'auto'`
+  - `setDarkTheme(enabled)` → `setTheme(theme)`
+  - `getDarkTheme()` → `getTheme()`
+  - Default theme is now `'light'` (was auto-detect)
+- **Breaking Change:** Timeout API simplified: `autoDismissTimeout` and `autoDismissTimeoutSeconds` → `timeout: number`
+  - Added global `setTimeout(seconds)` method
+  - `timeout: 30` is cleaner than `autoDismissTimeout: true, autoDismissTimeoutSeconds: 30`
+- **Feature:** CSS auto-loading - CSS is automatically injected when JavaScript is imported
+- **Improvement:** Better locale file path detection for NPM package installations
+- **Backward Compatibility:** Old `darkTheme` and `autoDismissTimeout` parameters still work but are deprecated
 
 ### 1.0.0
 

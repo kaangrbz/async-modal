@@ -22,7 +22,10 @@ class AsyncModal {
         this.soundPath = null; // Configurable sound file path
         this.currentLanguage = options.language || 'en';
         this.locales = {}; // Loaded locale data
-        this.darkTheme = options.darkTheme !== undefined ? options.darkTheme : this._detectDarkTheme();
+        // Theme: 'dark' | 'light' | 'auto' (default: 'light')
+        this.theme = options.theme || 'light';
+        // Global default timeout (null means no timeout)
+        this.defaultTimeout = options.timeout !== undefined ? (options.timeout > 0 ? options.timeout : null) : null;
         
         // Determine locale path dynamically
         if (options.localePath) {
@@ -61,6 +64,11 @@ class AsyncModal {
                 // Silently fall back to English if loading fails
             });
         }
+        
+        // Inject CSS automatically if in browser environment
+        if (typeof document !== 'undefined') {
+            this._injectCSS();
+        }
     }
 
     /**
@@ -73,6 +81,47 @@ class AsyncModal {
             return false;
         }
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    /**
+     * Resolves theme value to actual theme ('dark' or 'light')
+     * If theme is 'auto', detects system preference
+     * @param {string} theme - Theme value ('dark', 'light', or 'auto')
+     * @returns {string} - Resolved theme ('dark' or 'light')
+     * @private
+     */
+    _resolveTheme(theme) {
+        if (theme === 'auto') {
+            return this._detectDarkTheme() ? 'dark' : 'light';
+        }
+        return theme || 'light';
+    }
+
+    /**
+     * Sets the global theme preference
+     * @param {string} theme - Theme value: 'dark', 'light', or 'auto'
+     */
+    setTheme(theme) {
+        if (theme !== 'dark' && theme !== 'light' && theme !== 'auto') {
+            throw new Error("Theme must be 'dark', 'light', or 'auto'");
+        }
+        this.theme = theme;
+    }
+
+    /**
+     * Gets the current global theme preference
+     * @returns {string} - Current theme: 'dark', 'light', or 'auto'
+     */
+    getTheme() {
+        return this.theme;
+    }
+
+    /**
+     * Sets the global default timeout for all modals
+     * @param {number} seconds - Timeout duration in seconds (0 or null to disable)
+     */
+    setTimeout(seconds) {
+        this.defaultTimeout = seconds > 0 ? seconds : null;
     }
 
     /**
@@ -139,12 +188,40 @@ class AsyncModal {
         try {
             // Try to load locale file
             if (typeof fetch !== 'undefined') {
-                // Try multiple possible paths
+                // Try multiple possible paths including NPM package paths
                 const possiblePaths = [
                     `${this.localePath}/${lang}.json`,
                     `../locales/${lang}.json`,
                     `./locales/${lang}.json`,
-                    `locales/${lang}.json`
+                    `locales/${lang}.json`,
+                    // NPM package paths
+                    `./node_modules/async-modal/locales/${lang}.json`,
+                    `../node_modules/async-modal/locales/${lang}.json`,
+                    `../../node_modules/async-modal/locales/${lang}.json`,
+                    `node_modules/async-modal/locales/${lang}.json`,
+                    // Try to detect from script location for NPM package
+                    ...(typeof document !== 'undefined' ? (() => {
+                        const scripts = document.getElementsByTagName('script');
+                        const npmPaths = [];
+                        for (let i = 0; i < scripts.length; i++) {
+                            const src = scripts[i].src;
+                            if (src && (src.includes('async-modal') || src.includes('asyncModal'))) {
+                                // Extract base path
+                                const basePath = src.substring(0, src.lastIndexOf('/'));
+                                // Try different relative paths
+                                npmPaths.push(`${basePath}/../locales/${lang}.json`);
+                                npmPaths.push(`${basePath}/../../locales/${lang}.json`);
+                                // If in node_modules
+                                if (src.includes('node_modules')) {
+                                    const nodeModulesIndex = src.indexOf('node_modules');
+                                    const afterNodeModules = src.substring(nodeModulesIndex);
+                                    const packagePath = afterNodeModules.substring(0, afterNodeModules.indexOf('/', afterNodeModules.indexOf('/') + 1));
+                                    npmPaths.push(`${src.substring(0, nodeModulesIndex)}${packagePath}/locales/${lang}.json`);
+                                }
+                            }
+                        }
+                        return npmPaths;
+                    })() : [])
                 ];
                 
                 for (const path of possiblePaths) {
@@ -234,11 +311,13 @@ class AsyncModal {
      * @param {string} [options.confirmButtonText='Continue'] - Confirm button text
      * @param {string} [options.cancelButtonText='Cancel'] - Cancel button text
      * @param {boolean} [options.playSound=false] - Play notification sound (default: false)
-     * @param {boolean} [options.autoDismissTimeout=false] - Enable auto dismiss/cancel timeout (default: false)
-     * @param {number} [options.autoDismissTimeoutSeconds=15] - Timeout duration in seconds (default: 15)
+     * @param {number} [options.timeout] - Timeout duration in seconds (0 or undefined to disable, overrides global timeout)
+     * @param {boolean} [options.autoDismissTimeout] - [DEPRECATED] Enable auto dismiss/cancel timeout (use timeout instead)
+     * @param {number} [options.autoDismissTimeoutSeconds] - [DEPRECATED] Timeout duration in seconds (use timeout instead)
      * @param {string} [options.soundPath] - Custom sound file path (overrides default)
      * @param {string} [options.language] - Language code (overrides global language for this modal - highest priority)
-     * @param {boolean} [options.darkTheme] - Use dark theme for this modal (overrides global dark theme setting)
+     * @param {string} [options.theme] - Theme for this modal: 'dark', 'light', or 'auto' (overrides global theme setting)
+     * @param {boolean} [options.darkTheme] - [DEPRECATED] Use dark theme for this modal (use theme instead)
      * @returns {Promise<string>} - User's selection ('continue', 'cancel', 'settings', 'help', 'danger')
      */
     async show(options = {}) {
@@ -257,6 +336,29 @@ class AsyncModal {
             // Store resolve function
             this.currentResolve = resolve;
             
+            // Resolve theme: priority: options.theme > options.darkTheme (deprecated) > this.theme > 'light'
+            let themeSetting = options.theme;
+            if (!themeSetting && options.darkTheme !== undefined) {
+                // Backward compatibility: convert boolean darkTheme to theme
+                themeSetting = options.darkTheme ? 'dark' : 'light';
+            }
+            if (!themeSetting) {
+                themeSetting = this.theme;
+            }
+            const modalTheme = this._resolveTheme(themeSetting);
+            
+            // Resolve timeout: priority: options.timeout > options.autoDismissTimeout (deprecated) > this.defaultTimeout
+            let timeout = options.timeout !== undefined ? options.timeout : null;
+            if (timeout === null && options.autoDismissTimeout) {
+                // Backward compatibility: use deprecated parameters
+                timeout = options.autoDismissTimeoutSeconds || 15;
+            }
+            if (timeout === null) {
+                timeout = this.defaultTimeout;
+            }
+            const autoDismissTimeout = timeout !== null && timeout > 0;
+            const autoDismissTimeoutSeconds = timeout || 15;
+            
             // Default options with localization
             // Use modalLanguage for translations (respects function parameter priority)
             const config = {
@@ -274,12 +376,13 @@ class AsyncModal {
                 confirmButtonText: options.confirmButtonText || this.t('buttons.continue', modalLanguage),
                 cancelButtonText: options.cancelButtonText || this.t('buttons.cancel', modalLanguage),
                 playSound: options.playSound !== undefined ? options.playSound : false,
-                autoDismissTimeout: options.autoDismissTimeout !== undefined ? options.autoDismissTimeout : false,
-                autoDismissTimeoutSeconds: options.autoDismissTimeoutSeconds || 15,
+                autoDismissTimeout: autoDismissTimeout,
+                autoDismissTimeoutSeconds: autoDismissTimeoutSeconds,
                 soundPath: options.soundPath || this.soundPath,
                 language: modalLanguage,
-                darkTheme: options.darkTheme !== undefined ? options.darkTheme : this.darkTheme,
-                ...options
+                ...options,
+                // Override theme with resolved theme (after spread to ensure it's not overridden)
+                theme: modalTheme
             };
 
             // Validate document is available
@@ -386,10 +489,8 @@ class AsyncModal {
             `;
         }
 
-        // Determine theme class
-        const themeClass = config.darkTheme !== undefined 
-            ? (config.darkTheme ? 'dark-theme' : 'light-theme')
-            : (this.darkTheme ? 'dark-theme' : '');
+        // Determine theme class from resolved theme
+        const themeClass = config.theme === 'dark' ? 'dark-theme' : '';
         
         return `
             <div class="async-modal-overlay ${themeClass}" role="dialog" aria-modal="true" aria-labelledby="async-modal-title">
@@ -665,6 +766,57 @@ class AsyncModal {
             this.currentResolve(action);
             this.currentResolve = null;
         }
+    }
+
+    /**
+     * Injects CSS automatically if not already loaded
+     * @private
+     */
+    _injectCSS() {
+        // Check if CSS is already loaded
+        if (document.querySelector('link[data-async-modal-css]')) {
+            return;
+        }
+        
+        // Get CSS path
+        const cssPath = this._getCSSPath();
+        
+        // Create and inject link tag
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = cssPath;
+        link.setAttribute('data-async-modal-css', 'true');
+        document.head.appendChild(link);
+    }
+
+    /**
+     * Determines the CSS file path intelligently
+     * @returns {string} - CSS file path
+     * @private
+     */
+    _getCSSPath() {
+        // 1. Try to find from script tag
+        if (typeof document !== 'undefined') {
+            const scripts = document.getElementsByTagName('script');
+            for (let script of scripts) {
+                if (script.src && (script.src.includes('asyncModal.js') || script.src.includes('async-modal'))) {
+                    const basePath = script.src.substring(0, script.src.lastIndexOf('/'));
+                    // Try async-modal.css in the same directory
+                    return `${basePath}/async-modal.css`;
+                }
+            }
+        }
+        
+        // 2. Try NPM package paths
+        const possiblePaths = [
+            './node_modules/async-modal/src/async-modal.css',
+            '../node_modules/async-modal/src/async-modal.css',
+            '../../node_modules/async-modal/src/async-modal.css',
+            'node_modules/async-modal/src/async-modal.css'
+        ];
+        
+        // 3. CDN fallback (as last resort)
+        return 'https://cdn.jsdelivr.net/npm/async-modal@latest/src/async-modal.css';
     }
 
     /**
