@@ -49,7 +49,6 @@ npm install async-modal
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.min.css">
   <!-- CSS is automatically loaded, manual link is optional -->
   <!-- <link rel="stylesheet" href="node_modules/async-modal/src/async-modal.css"> -->
 </head>
@@ -79,6 +78,58 @@ npm install async-modal
 
 ### ES Module Usage
 
+**Not:** Paket şu anda sadece CommonJS export sağlamaktadır. ES module kullanımı için iki seçenek vardır:
+
+#### Seçenek 1: Script Tag ile Kullanım (En Kolay - Önerilen)
+
+Script tag ile kullanım en kolay yöntemdir ve ekstra yapılandırma gerektirmez:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/async-modal@latest/src/asyncModal.js"></script>
+<script>
+  async function showModal() {
+    // window.asyncModal otomatik olarak oluşturulur
+    const result = await window.asyncModal.show({
+      title: 'Confirm Action',
+      message: 'Are you sure you want to proceed?',
+      showCancel: true,
+      showContinue: true
+    });
+    
+    if (result === 'continue') {
+      console.log('User confirmed');
+    }
+  }
+  
+  showModal();
+</script>
+```
+
+#### Seçenek 2: Vite ile ES Module Kullanımı
+
+Vite kullanıyorsanız, `vite.config.js` dosyası oluşturarak CommonJS desteğini etkinleştirin:
+
+**vite.config.js:**
+```javascript
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  optimizeDeps: {
+    include: ['async-modal'],
+    esbuildOptions: {
+      format: 'esm'
+    }
+  },
+  build: {
+    commonjsOptions: {
+      transformMixedEsModules: true,
+      include: [/async-modal/, /node_modules/]
+    }
+  }
+});
+```
+
+**Kullanım:**
 ```javascript
 import AsyncModal from 'async-modal';
 // CSS is automatically loaded, manual import is optional
@@ -665,7 +716,6 @@ The modal comes with default styles. You can customize it by overriding CSS clas
 
 ## Requirements
 
-- Font Awesome 6.x (for icons)
 - Modern browser with ES6+ support
 
 ## Browser Support

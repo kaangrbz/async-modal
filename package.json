@@ -1,6 +1,6 @@
 {
-  "name": "async-modal",
-  "version": "1.0.3",
+"name": "async-modal",
+  "version": "1.0.4",
   "description": "A Promise-based modal system that returns user selection, with support for confirmation checkboxes, auto-dismiss timeouts, customizable buttons, and built-in internationalization (i18n) for 13+ languages",
   "main": "src/asyncModal.js",
   "module": "src/asyncModal.js",
@@ -46,9 +46,7 @@
     "url": "https://github.com/kaangrbz/async-modal/issues"
   },
   "homepage": "https://github.com/kaangrbz/async-modal#readme",
-  "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.4.0"
-  },
+  "dependencies": {},
   "engines": {
     "node": ">=12.0.0"
   }

@@ -446,7 +446,7 @@ class AsyncModal {
         if (config.showCancel) {
             buttonsHtml += `
                 <button class="async-modal-btn async-modal-btn-cancel" data-action="cancel" aria-label="${config.cancelButtonText}">
-                    <i class="fas fa-times" aria-hidden="true"></i> ${this.escapeHtml(config.cancelButtonText)}
+                    ${this.getButtonIconSVG('times')} ${this.escapeHtml(config.cancelButtonText)}
                 </button>
             `;
         }
@@ -455,7 +455,7 @@ class AsyncModal {
         if (config.showContinue) {
             buttonsHtml += `
                 <button class="async-modal-btn async-modal-btn-continue" data-action="continue" id="continueBtn" ${config.requireConfirmation ? 'disabled' : ''} aria-label="${config.confirmButtonText}">
-                    <i class="fas fa-check" aria-hidden="true"></i> <span id="continueText">${this.escapeHtml(config.confirmButtonText)}</span>
+                    ${this.getButtonIconSVG('check')} <span id="continueText">${this.escapeHtml(config.confirmButtonText)}</span>
                 </button>
             `;
         }
@@ -465,7 +465,7 @@ class AsyncModal {
             const settingsText = this.t('buttons.settings', config.language);
             buttonsHtml += `
                 <button class="async-modal-btn async-modal-btn-settings" data-action="settings" aria-label="${this.escapeHtml(settingsText)}">
-                    <i class="fas fa-cog" aria-hidden="true"></i> ${this.escapeHtml(settingsText)}
+                    ${this.getButtonIconSVG('cog')} ${this.escapeHtml(settingsText)}
                 </button>
             `;
         }
@@ -475,7 +475,7 @@ class AsyncModal {
             const helpText = this.t('buttons.help', config.language);
             buttonsHtml += `
                 <button class="async-modal-btn async-modal-btn-help" data-action="help" aria-label="${this.escapeHtml(helpText)}">
-                    <i class="fas fa-question-circle" aria-hidden="true"></i> ${this.escapeHtml(helpText)}
+                    ${this.getButtonIconSVG('question-circle')} ${this.escapeHtml(helpText)}
                 </button>
             `;
         }
@@ -484,7 +484,7 @@ class AsyncModal {
         if (config.showDanger) {
             buttonsHtml += `
                 <button class="async-modal-btn async-modal-btn-danger" data-action="danger" aria-label="${config.confirmButtonText}">
-                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i> ${this.escapeHtml(config.confirmButtonText)}
+                    ${this.getButtonIconSVG('exclamation-triangle')} ${this.escapeHtml(config.confirmButtonText)}
                 </button>
             `;
         }
@@ -542,18 +542,35 @@ class AsyncModal {
     }
 
     /**
-     * Returns icon HTML
+     * Returns SVG icon for buttons
+     * @param {string} iconName - Icon name (times, check, cog, question-circle, exclamation-triangle)
+     * @returns {string} - SVG icon HTML
+     * @private
+     */
+    getButtonIconSVG(iconName) {
+        const icons = {
+            'times': '<svg width="14" height="14" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M324.5 411.1c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L214.6 256 347.1 123.5c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L192 233.4 59.5 100.9c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L169.4 256 36.9 388.5c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L192 278.6 324.5 411.1z"/></svg>',
+            'check': '<svg width="14" height="14" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>',
+            'cog': '<svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/></svg>',
+            'question-circle': '<svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10 23.6-23 23.6c-12.6 0-23-10.2-23-23.2l0-11.2c0-15.3 8.7-29.2 22.4-35.9l47.2-25.4c5.1-2.7 8.1-8.1 8.1-13.9c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/></svg>',
+            'exclamation-triangle': '<svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>'
+        };
+        return icons[iconName] || icons['question-circle'];
+    }
+
+    /**
+     * Returns icon HTML (SVG format)
      * @param {string} iconType - Icon type
      * @returns {string} - Icon HTML
      * @private
      */
     getIconHtml(iconType) {
         const icons = {
-            warning: '<i class="fas fa-exclamation-triangle"></i>',
-            danger: '<i class="fas fa-times-circle"></i>',
-            info: '<i class="fas fa-info-circle"></i>',
-            success: '<i class="fas fa-check-circle"></i>',
-            question: '<i class="fas fa-question-circle"></i>'
+            warning: '<svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>',
+            danger: '<svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>',
+            info: '<svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>',
+            success: '<svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>',
+            question: '<svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10 23.6-23 23.6c-12.6 0-23-10.2-23-23.2l0-11.2c0-15.3 8.7-29.2 22.4-35.9l47.2-25.4c5.1-2.7 8.1-8.1 8.1-13.9c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/></svg>'
         };
         return icons[iconType] || icons.question;
     }
@@ -698,8 +715,8 @@ class AsyncModal {
      * @private
      */
     updateCancelButtonText(button, originalText, seconds) {
-        const icon = button.querySelector('i');
-        const iconHtml = icon ? icon.outerHTML : '';
+        const icon = button.querySelector('svg');
+        const iconHtml = icon ? icon.outerHTML : this.getButtonIconSVG('times');
         const secondsText = this.t('timeout.seconds');
         button.innerHTML = `${iconHtml} ${this.escapeHtml(originalText)} (${seconds} ${secondsText})`;
     }
@@ -941,8 +958,8 @@ if (typeof document !== 'undefined') {
                 const cancelButton = document.querySelector('.async-modal-btn-cancel');
                 if (cancelButton && cancelButton.hasAttribute('data-original-text')) {
                     const originalText = cancelButton.getAttribute('data-original-text');
-                    const icon = cancelButton.querySelector('i');
-                    const iconHtml = icon ? icon.outerHTML : '';
+                    const icon = cancelButton.querySelector('svg');
+                    const iconHtml = icon ? icon.outerHTML : window.asyncModal.getButtonIconSVG('times');
                     cancelButton.innerHTML = `${iconHtml} ${originalText}`;
                     cancelButton.removeAttribute('data-original-text');
                 }
