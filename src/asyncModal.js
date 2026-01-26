@@ -490,7 +490,14 @@ class AsyncModal {
         }
 
         // Determine theme class from resolved theme
-        const themeClass = config.theme === 'dark' ? 'dark-theme' : '';
+        // Light theme için 'light-theme' class'ı eklenmeli ki @media (prefers-color-scheme: dark) kuralı devreye girmesin
+        let themeClass = '';
+        if (config.theme === 'dark') {
+            themeClass = 'dark-theme';
+        } else if (config.theme === 'light') {
+            themeClass = 'light-theme';
+        }
+        // 'auto' durumunda themeClass boş kalır, sistem temasına göre davranır
         
         return `
             <div class="async-modal-overlay ${themeClass}" role="dialog" aria-modal="true" aria-labelledby="async-modal-title">

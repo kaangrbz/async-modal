@@ -136,8 +136,8 @@
   font-size: 14px;
   font-weight: 500;
   transition: background-color 0.2s ease;
-  min-width: 120px;
-  margin-left: 10px;
+  min-width: 80px;
+  /* margin-left: 10px; */
   box-shadow: none;
   transform: none;
 }
