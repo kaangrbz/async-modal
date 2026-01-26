@@ -33,11 +33,24 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Prepare demo files
+        run: |
+          # Create a directory for the demo
+          mkdir -p _site
+          
+          # Copy demo.html as index.html and fix paths for GitHub Pages
+          sed 's|href="../src/async-modal.css"|href="./src/async-modal.css"|g; s|src="../src/asyncModal.js"|src="./src/asyncModal.js"|g; s|localePath = '\''../locales'\''|localePath = '\''./locales'\''|g' examples/demo.html > _site/index.html
+          
+          # Copy required directories
+          cp -r src _site/
+          cp -r locales _site/
+          
+          # Create a simple redirect for demo.html
+          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=./index.html"></head><body>Redirecting to <a href="./index.html">demo</a>...</body></html>' > _site/demo.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Sadece demo.html dosyasını deploy et
-          path: './examples/demo.html'
+          path: '_site'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
