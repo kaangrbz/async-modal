@@ -1,6 +1,6 @@
 {
 "name": "async-modal",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A Promise-based modal system that returns user selection, with support for confirmation checkboxes, auto-dismiss timeouts, customizable buttons, and built-in internationalization (i18n) for 13+ languages",
   "main": "src/asyncModal.js",
   "module": "src/asyncModal.js",
