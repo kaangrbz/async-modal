@@ -33,20 +33,35 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Prepare demo files
+      - name: Prepare files
         run: |
-          # Create a directory for the demo
+          # Create a directory for the site
           mkdir -p _site
           
-          # Copy demo.html as index.html and fix paths for GitHub Pages
-          sed 's|href="../src/async-modal.css"|href="./src/async-modal.css"|g; s|src="../src/asyncModal.js"|src="./src/asyncModal.js"|g; s|localePath = '\''../locales'\''|localePath = '\''./locales'\''|g' examples/demo.html > _site/index.html
+          # Copy all files from examples directory
+          cp -r examples/* _site/
           
-          # Copy required directories
+          # Copy required directories (src and locales)
           cp -r src _site/
           cp -r locales _site/
           
-          # Create a simple redirect for demo.html
-          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=./index.html"></head><body>Redirecting to <a href="./index.html">demo</a>...</body></html>' > _site/demo.html
+          # Fix paths in all HTML files for GitHub Pages
+          find _site -name "*.html" -type f -exec sed -i 's|href="../src/async-modal.css"|href="./src/async-modal.css"|g' {} \;
+          find _site -name "*.html" -type f -exec sed -i 's|src="../src/asyncModal.js"|src="./src/asyncModal.js"|g' {} \;
+          find _site -name "*.html" -type f -exec sed -i "s|localePath = '../locales'|localePath = './locales'|g" {} \;
+          find _site -name "*.html" -type f -exec sed -i "s|localePath = \"../locales\"|localePath = \"./locales\"|g" {} \;
+          
+          # Fix paths in demo.js if it references locales
+          if [ -f "_site/demo.js" ]; then
+            sed -i "s|localePath = '../locales'|localePath = './locales'|g" _site/demo.js
+            sed -i "s|localePath = \"../locales\"|localePath = \"./locales\"|g" _site/demo.js
+          fi
+          
+          # Ensure index.html exists (it should already be copied from examples)
+          if [ ! -f "_site/index.html" ]; then
+            # If index.html doesn't exist, use demo.html as index.html
+            cp _site/demo.html _site/index.html
+          fi
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
