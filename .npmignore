@@ -1,6 +1,5 @@
 # Development files
 examples/
-dist/
 *.log
 *.md
 !README.md
@@ -34,6 +33,5 @@ tests/
 # Config files
 .eslintrc*
 .prettierrc*
-tsconfig.json
 jest.config.js
 

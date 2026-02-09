@@ -50,10 +50,10 @@ npm install async-modal
 <html>
 <head>
   <!-- CSS is automatically loaded, manual link is optional -->
-  <!-- <link rel="stylesheet" href="node_modules/async-modal/src/async-modal.css"> -->
+  <!-- <link rel="stylesheet" href="node_modules/async-modal/dist/async-modal.css"> -->
 </head>
 <body>
-  <script src="node_modules/async-modal/src/asyncModal.js"></script>
+  <script src="node_modules/async-modal/dist/async-modal.js"></script>
   <script>
     async function showModal() {
       const result = await window.asyncModal.show({
@@ -81,7 +81,7 @@ npm install async-modal
 ```javascript
 import AsyncModal from 'async-modal';
 // CSS is automatically loaded, manual import is optional
-// import 'async-modal/src/async-modal.css';
+// import 'async-modal/style';
 
 const modal = new AsyncModal();
 
@@ -98,8 +98,8 @@ const result = await modal.show({
 
 ```javascript
 const AsyncModal = require('async-modal');
-// CSS is automatically loaded, manual import is optional
-// require('async-modal/src/async-modal.css');
+// CSS is automatically loaded, manual require is optional
+// require('async-modal/style');
 
 const modal = new AsyncModal();
 
@@ -125,7 +125,6 @@ const modal = new AsyncModal(options);
 
 - `options` (Object, optional) - Configuration options
   - `language` (string, default: `'en'`) - Default language code
-  - `localePath` (string, default: `'./locales'`) - Path to locale files
   - `soundPath` (string) - Default sound file path
   - `theme` (string, default: `'light'`) - Global theme: `'dark'`, `'light'`, or `'auto'` (auto-detects system preference)
   - `timeout` (number, optional) - Global default timeout in seconds for all modals (0 or undefined to disable)
@@ -138,13 +137,6 @@ const modal = new AsyncModal();
 
 // With Turkish as default language
 const modal = new AsyncModal({ language: 'tr' });
-
-// With custom locale path and theme
-const modal = new AsyncModal({ 
-  language: 'es',
-  localePath: './custom-locales',
-  theme: 'dark' // or 'light' or 'auto'
-});
 
 // With global timeout
 const modal = new AsyncModal({ 
@@ -176,12 +168,12 @@ Shows a modal and returns a Promise that resolves with the user's selection.
   - `cancelButtonText` (string, default: `'Cancel'`) - Cancel button text
   - `playSound` (boolean, default: `false`) - Play notification sound
   - `timeout` (number, optional) - Timeout duration in seconds (0 or undefined to disable, overrides global timeout)
-  - `autoDismissTimeout` (boolean, deprecated) - [DEPRECATED] Use `timeout` instead
-  - `autoDismissTimeoutSeconds` (number, deprecated) - [DEPRECATED] Use `timeout` instead
+  - `autoDismissTimeout` (boolean) - **Deprecated.** Use `timeout` instead. Will be removed in a future version.
+  - `autoDismissTimeoutSeconds` (number) - **Deprecated.** Use `timeout` instead. Will be removed in a future version.
   - `soundPath` (string) - Custom sound file path
   - `language` (string) - Language code (overrides global language for this modal - highest priority)
   - `theme` (string) - Theme for this modal: `'dark'`, `'light'`, or `'auto'` (overrides global theme setting)
-  - `darkTheme` (boolean, deprecated) - [DEPRECATED] Use `theme` instead
+  - `darkTheme` (boolean) - **Deprecated.** Use `theme: 'dark' | 'light'` instead. Will be removed in a future version.
 
 **Returns:** `Promise<string>` - Resolves with: `'continue'`, `'cancel'`, `'settings'`, `'help'`, or `'danger'`
 
@@ -637,7 +629,7 @@ The CSS file is automatically loaded when you import or require the JavaScript m
 
 ```javascript
 // CSS is automatically loaded, this is optional
-import 'async-modal/src/async-modal.css';
+import 'async-modal/style';
 ```
 
 The auto-loading works in:
@@ -693,7 +685,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
   - Added global `setTimeout(seconds)` method
   - `timeout: 30` is cleaner than `autoDismissTimeout: true, autoDismissTimeoutSeconds: 30`
 - **Feature:** CSS auto-loading - CSS is automatically injected when JavaScript is imported
-- **Improvement:** Better locale file path detection for NPM package installations
 - **Backward Compatibility:** Old `darkTheme` and `autoDismissTimeout` parameters still work but are deprecated
 
 ### 1.0.0

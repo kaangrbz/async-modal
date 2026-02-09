@@ -31,35 +31,26 @@ jobs:
     steps: 
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build
+        run: yarn build
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Prepare files
         run: |
-          # Create a directory for the site
           mkdir -p _site
-          
-          # Copy all files from examples directory
           cp -r examples/* _site/
-          
-          # Copy required directories (src and locales)
-          cp -r src _site/
-          cp -r locales _site/
-          
-          # Fix paths in all HTML files for GitHub Pages
-          find _site -name "*.html" -type f -exec sed -i 's|href="../src/async-modal.css"|href="./src/async-modal.css"|g' {} \;
-          find _site -name "*.html" -type f -exec sed -i 's|src="../src/asyncModal.js"|src="./src/asyncModal.js"|g' {} \;
-          find _site -name "*.html" -type f -exec sed -i "s|localePath = '../locales'|localePath = './locales'|g" {} \;
-          find _site -name "*.html" -type f -exec sed -i "s|localePath = \"../locales\"|localePath = \"./locales\"|g" {} \;
-          
-          # Fix paths in demo.js if it references locales
-          if [ -f "_site/demo.js" ]; then
-            sed -i "s|localePath = '../locales'|localePath = './locales'|g" _site/demo.js
-            sed -i "s|localePath = \"../locales\"|localePath = \"./locales\"|g" _site/demo.js
-          fi
-          
-          # Ensure index.html exists (it should already be copied from examples)
+          cp -r dist _site/
+          find _site -name "*.html" -type f -exec sed -i 's|href="../src/async-modal.css"|href="./dist/async-modal.css"|g' {} \;
+          find _site -name "*.html" -type f -exec sed -i 's|src="../src/asyncModal.js"|src="./dist/asyncModal.mjs"|g' {} \;
+          find _site -name "*.html" -type f -exec sed -i 's|src="../src/asyncModal.cjs"|src="./dist/asyncModal.cjs"|g' {} \;
           if [ ! -f "_site/index.html" ]; then
-            # If index.html doesn't exist, use demo.html as index.html
             cp _site/demo.html _site/index.html
           fi
       - name: Upload artifact

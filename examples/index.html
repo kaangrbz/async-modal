@@ -47,8 +47,7 @@
 
         <div class="examples-grid">
             <div class="example-card">
-                <div class="example-icon"><i class="fas fa-layer-group"></i></div>
-                <h2>Complete Demo</h2>
+                <h2><i class="fas fa-layer-group"></i> Complete Demo</h2>
                 <p>All-in-one demo page with basic, advanced, and internationalization examples. Scroll down to explore all features with code examples.</p>
                 <a href="demo.html">
                     View Complete Demo
@@ -91,10 +90,10 @@
 &lt;html&gt;
 &lt;head&gt;
   &lt;!-- CSS is automatically loaded, manual link is optional --&gt;
-  &lt;!-- &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/async-modal@latest/src/async-modal.css"&gt; --&gt;
+  &lt;!-- &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/async-modal@latest/dist/async-modal.css"&gt; --&gt;
 &lt;/head&gt;
 &lt;body&gt;
-  &lt;script src="https://cdn.jsdelivr.net/npm/async-modal@latest/src/asyncModal.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdn.jsdelivr.net/npm/async-modal@latest/dist/async-modal.js"&gt;&lt;/script&gt;
   &lt;script&gt;
     <span class="keyword">async</span> <span class="function">function</span> showModal() {
       <span class="keyword">const</span> result = <span class="keyword">await</span> window.asyncModal.show({
@@ -125,7 +124,7 @@
 <span class="keyword">import</span> React, { useEffect } <span class="keyword">from</span> <span class="string">'react'</span>;
 <span class="keyword">import</span> AsyncModal <span class="keyword">from</span> <span class="string">'async-modal'</span>;
 <span class="comment">// CSS is automatically loaded, manual import is optional</span>
-<span class="comment">// import 'async-modal/src/async-modal.css';</span>
+<span class="comment">// import 'async-modal/style';</span>
 
 <span class="function">function</span> App() {
   <span class="keyword">const</span> modal = <span class="keyword">new</span> AsyncModal();
@@ -163,7 +162,8 @@
 
 <span class="keyword">const</span> { ipcRenderer } = <span class="keyword">require</span>(<span class="string">'electron'</span>);
 <span class="keyword">const</span> AsyncModal = <span class="keyword">require</span>(<span class="string">'async-modal'</span>);
-<span class="keyword">require</span>(<span class="string">'async-modal/src/async-modal.css'</span>);
+<span class="comment">// CSS is automatically loaded, manual require is optional</span>
+<span class="comment">// require('async-modal/style');</span>
 
 <span class="keyword">const</span> modal = <span class="keyword">new</span> AsyncModal();
 
@@ -202,7 +202,7 @@ window.addEventListener(<span class="string">'beforeunload'</span>, (e) => {
 &lt;script&gt;
 <span class="keyword">import</span> AsyncModal <span class="keyword">from</span> <span class="string">'async-modal'</span>;
 <span class="comment">// CSS is automatically loaded, manual import is optional</span>
-<span class="comment">// import 'async-modal/src/async-modal.css';</span>
+<span class="comment">// import 'async-modal/style';</span>
 
 <span class="keyword">export default</span> {
   <span class="function">methods</span>: {
@@ -236,6 +236,8 @@ window.addEventListener(<span class="string">'beforeunload'</span>, (e) => {
 <span class="comment">// Note: Requires a DOM environment (jsdom, puppeteer, etc.)</span>
 
 <span class="keyword">const</span> AsyncModal = <span class="keyword">require</span>(<span class="string">'async-modal'</span>);
+<span class="comment">// CSS is automatically loaded, manual require is optional</span>
+<span class="comment">// require('async-modal/style');</span>
 <span class="keyword">const</span> { JSDOM } = <span class="keyword">require</span>(<span class="string">'jsdom'</span>);
 
 <span class="comment">// Setup DOM environment</span>

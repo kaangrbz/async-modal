@@ -4,16 +4,38 @@
  * @module async-modal
  */
 
+import './async-modal.css';
+import { getLocale } from '../locales';
+import type { AsyncModalOptions, ShowOptions, ModalResult, ModalConfig } from './types';
+import type { LocaleData } from '../locales';
+
+declare global {
+  interface Window {
+    asyncModal?: AsyncModal;
+  }
+}
+
 /**
  * AsyncModal class for creating and managing async modals
  * @class AsyncModal
  */
 class AsyncModal {
+    currentModal: HTMLElement | null = null;
+    currentTimeout: ReturnType<typeof setTimeout> | null = null;
+    currentInterval: ReturnType<typeof setInterval> | null = null;
+    remainingSeconds = 0;
+    currentResolve: ((action: ModalResult) => void) | null = null;
+    soundPath: string | null = null;
+    currentLanguage!: string;
+    locales!: Record<string, LocaleData>;
+    theme!: string;
+    defaultTimeout: number | null = null;
+
     /**
      * Creates an instance of AsyncModal
      * @constructor
      */
-    constructor(options = {}) {
+    constructor(options: AsyncModalOptions = {}) {
         this.currentModal = null;
         this.currentTimeout = null;
         this.currentInterval = null;
@@ -21,50 +43,16 @@ class AsyncModal {
         this.currentResolve = null;
         this.soundPath = null; // Configurable sound file path
         this.currentLanguage = options.language || 'en';
-        this.locales = {}; // Loaded locale data
+        this.locales = {}; // Loaded locale data (from build-time getLocale)
         // Theme: 'dark' | 'light' | 'auto' (default: 'light')
         this.theme = options.theme || 'light';
         // Global default timeout (null means no timeout)
-        this.defaultTimeout = options.timeout !== undefined ? (options.timeout > 0 ? options.timeout : null) : null;
-        
-        // Determine locale path dynamically
-        if (options.localePath) {
-            this.localePath = options.localePath;
-        } else {
-            // Try to detect the correct path based on script location
-            if (typeof document !== 'undefined') {
-                const scripts = document.getElementsByTagName('script');
-                let scriptPath = './locales'; // Default fallback
-                
-                // Find the asyncModal.js script
-                for (let i = 0; i < scripts.length; i++) {
-                    const src = scripts[i].src;
-                    if (src && src.includes('asyncModal.js')) {
-                        // Extract directory path
-                        const scriptDir = src.substring(0, src.lastIndexOf('/'));
-                        scriptPath = scriptDir + '/locales';
-                        break;
-                    }
-                }
-                
-                // If script is in src/, locales should be at ../locales
-                // If script is in examples/, locales should be at ../locales
-                // Try common paths
-                this.localePath = scriptPath;
-            } else {
-                this.localePath = './locales';
-            }
-        }
-        
-        // Initialize with default English locale
-        this._initDefaultLocale();
-        // Load locale asynchronously if not English
-        if (this.currentLanguage !== 'en') {
-            this.loadLocale(this.currentLanguage).catch(() => {
-                // Silently fall back to English if loading fails
-            });
-        }
-        
+        const t = options.timeout;
+        this.defaultTimeout = t !== undefined ? (t != null && t > 0 ? t : null) : null;
+
+        this.locales['en'] = getLocale('en');
+        this.locales[this.currentLanguage] = getLocale(this.currentLanguage);
+
         // Inject CSS automatically if in browser environment
         if (typeof document !== 'undefined') {
             this._injectCSS();
@@ -90,18 +78,18 @@ class AsyncModal {
      * @returns {string} - Resolved theme ('dark' or 'light')
      * @private
      */
-    _resolveTheme(theme) {
+    _resolveTheme(theme: string): 'dark' | 'light' {
         if (theme === 'auto') {
             return this._detectDarkTheme() ? 'dark' : 'light';
         }
-        return theme || 'light';
+        return (theme as 'dark' | 'light') || 'light';
     }
 
     /**
      * Sets the global theme preference
      * @param {string} theme - Theme value: 'dark', 'light', or 'auto'
      */
-    setTheme(theme) {
+    setTheme(theme: 'dark' | 'light' | 'auto') {
         if (theme !== 'dark' && theme !== 'light' && theme !== 'auto') {
             throw new Error("Theme must be 'dark', 'light', or 'auto'");
         }
@@ -112,143 +100,35 @@ class AsyncModal {
      * Gets the current global theme preference
      * @returns {string} - Current theme: 'dark', 'light', or 'auto'
      */
-    getTheme() {
-        return this.theme;
+    getTheme(): 'dark' | 'light' | 'auto' {
+        return this.theme as 'dark' | 'light' | 'auto';
     }
 
     /**
      * Sets the global default timeout for all modals
      * @param {number} seconds - Timeout duration in seconds (0 or null to disable)
      */
-    setTimeout(seconds) {
+    setTimeout(seconds: number) {
         this.defaultTimeout = seconds > 0 ? seconds : null;
-    }
-
-    /**
-     * Initializes default English locale synchronously
-     * @private
-     */
-    _initDefaultLocale() {
-        this.locales['en'] = {
-            defaults: {
-                title: "Confirmation Required",
-                message: "Are you sure you want to proceed?",
-                confirmationText: "I confirm that I accept responsibility for this action"
-            },
-            buttons: {
-                continue: "Continue",
-                cancel: "Cancel",
-                settings: "Go to Settings",
-                help: "Help",
-                yes: "Yes",
-                no: "No",
-                ok: "OK",
-                close: "Close"
-            },
-            titles: {
-                confirmation: "Confirmation Required",
-                dangerous: "Dangerous Action",
-                warning: "Warning",
-                info: "Information",
-                success: "Success",
-                error: "Error",
-                workingTimeViolation: "Outside Working Hours",
-                responsibility: "Responsibility Confirmation Required"
-            },
-            messages: {
-                workingTimeViolation: "You are currently outside working hours. Are you sure you want to proceed?",
-                deleteConfirm: "This will permanently delete this item. This action cannot be undone.",
-                saveConfirm: "Do you want to save your changes?",
-                unsavedChanges: "You have unsaved changes. Do you want to save them before leaving?",
-                sessionExpiring: "Your session will expire soon.",
-                criticalAction: "This is a critical action that requires confirmation."
-            },
-            timeout: {
-                seconds: "sec",
-                expired: "Time expired"
-            }
-        };
     }
 
     /**
      * Configure sound file path
      * @param {string} path - Path to the sound file
      */
-    setSoundPath(path) {
+    setSoundPath(path: string) {
         this.soundPath = path;
     }
 
     /**
-     * Loads locale data for a specific language
+     * Loads locale data for a specific language (from built-in locales, no fetch).
      * @param {string} lang - Language code (e.g., 'en', 'tr', 'es')
      * @returns {Promise<Object>} - Locale data
      * @private
      */
-    async loadLocale(lang) {
-        try {
-            // Try to load locale file
-            if (typeof fetch !== 'undefined') {
-                // Try multiple possible paths including NPM package paths
-                const possiblePaths = [
-                    `${this.localePath}/${lang}.json`,
-                    `../locales/${lang}.json`,
-                    `./locales/${lang}.json`,
-                    `locales/${lang}.json`,
-                    // NPM package paths
-                    `./node_modules/async-modal/locales/${lang}.json`,
-                    `../node_modules/async-modal/locales/${lang}.json`,
-                    `../../node_modules/async-modal/locales/${lang}.json`,
-                    `node_modules/async-modal/locales/${lang}.json`,
-                    // Try to detect from script location for NPM package
-                    ...(typeof document !== 'undefined' ? (() => {
-                        const scripts = document.getElementsByTagName('script');
-                        const npmPaths = [];
-                        for (let i = 0; i < scripts.length; i++) {
-                            const src = scripts[i].src;
-                            if (src && (src.includes('async-modal') || src.includes('asyncModal'))) {
-                                // Extract base path
-                                const basePath = src.substring(0, src.lastIndexOf('/'));
-                                // Try different relative paths
-                                npmPaths.push(`${basePath}/../locales/${lang}.json`);
-                                npmPaths.push(`${basePath}/../../locales/${lang}.json`);
-                                // If in node_modules
-                                if (src.includes('node_modules')) {
-                                    const nodeModulesIndex = src.indexOf('node_modules');
-                                    const afterNodeModules = src.substring(nodeModulesIndex);
-                                    const packagePath = afterNodeModules.substring(0, afterNodeModules.indexOf('/', afterNodeModules.indexOf('/') + 1));
-                                    npmPaths.push(`${src.substring(0, nodeModulesIndex)}${packagePath}/locales/${lang}.json`);
-                                }
-                            }
-                        }
-                        return npmPaths;
-                    })() : [])
-                ];
-                
-                for (const path of possiblePaths) {
-                    try {
-                        const response = await fetch(path);
-                        if (response.ok) {
-                            this.locales[lang] = await response.json();
-                            // Update localePath to the working path
-                            this.localePath = path.substring(0, path.lastIndexOf('/'));
-                            return this.locales[lang];
-                        }
-                    } catch (e) {
-                        // Try next path
-                        continue;
-                    }
-                }
-            }
-        } catch (error) {
-            // Silently fall back to English if locale loading fails
-        }
-        
-        // Ensure English locale is initialized
-        if (!this.locales['en']) {
-            this._initDefaultLocale();
-        }
-        
-        return this.locales[lang] || this.locales['en'];
+    loadLocale(lang: string): Promise<LocaleData> {
+        this.locales[lang] = getLocale(lang);
+        return Promise.resolve(this.locales[lang] || this.locales['en']);
     }
 
     /**
@@ -256,7 +136,7 @@ class AsyncModal {
      * @param {string} lang - Language code (e.g., 'en', 'tr', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'ko', 'ar', 'hi')
      * @returns {Promise<void>}
      */
-    async setLanguage(lang) {
+    async setLanguage(lang: string): Promise<void> {
         this.currentLanguage = lang;
         await this.loadLocale(lang);
     }
@@ -268,29 +148,28 @@ class AsyncModal {
      * @returns {string} - Localized string
      * @private
      */
-    t(key, lang = null) {
+    t(key: string, lang: string | null = null): string {
         const locale = this.locales[lang || this.currentLanguage] || this.locales['en'] || {};
         const keys = key.split('.');
-        let value = locale;
-        
+        let value: unknown = locale;
+
         for (const k of keys) {
             if (value && typeof value === 'object' && k in value) {
-                value = value[k];
+                value = (value as Record<string, unknown>)[k];
             } else {
-                // Fallback to English
                 const enLocale = this.locales['en'] || {};
-                let enValue = enLocale;
+                let enValue: unknown = enLocale;
                 for (const enK of keys) {
                     if (enValue && typeof enValue === 'object' && enK in enValue) {
-                        enValue = enValue[enK];
+                        enValue = (enValue as Record<string, unknown>)[enK];
                     } else {
-                        return key; // Return key if not found
+                        return key;
                     }
                 }
-                return enValue || key;
+                return typeof enValue === 'string' ? enValue : key;
             }
         }
-        
+
         return typeof value === 'string' ? value : key;
     }
 
@@ -312,15 +191,15 @@ class AsyncModal {
      * @param {string} [options.cancelButtonText='Cancel'] - Cancel button text
      * @param {boolean} [options.playSound=false] - Play notification sound (default: false)
      * @param {number} [options.timeout] - Timeout duration in seconds (0 or undefined to disable, overrides global timeout)
-     * @param {boolean} [options.autoDismissTimeout] - [DEPRECATED] Enable auto dismiss/cancel timeout (use timeout instead)
-     * @param {number} [options.autoDismissTimeoutSeconds] - [DEPRECATED] Timeout duration in seconds (use timeout instead)
+     * @param {boolean} [options.autoDismissTimeout] - @deprecated Use `timeout` instead. Will be removed in a future version.
+     * @param {number} [options.autoDismissTimeoutSeconds] - @deprecated Use `timeout` instead. Will be removed in a future version.
      * @param {string} [options.soundPath] - Custom sound file path (overrides default)
      * @param {string} [options.language] - Language code (overrides global language for this modal - highest priority)
      * @param {string} [options.theme] - Theme for this modal: 'dark', 'light', or 'auto' (overrides global theme setting)
-     * @param {boolean} [options.darkTheme] - [DEPRECATED] Use dark theme for this modal (use theme instead)
+     * @param {boolean} [options.darkTheme] - @deprecated Use `theme: 'dark' | 'light'` instead. Will be removed in a future version.
      * @returns {Promise<string>} - User's selection ('continue', 'cancel', 'settings', 'help', 'danger')
      */
-    async show(options = {}) {
+    async show(options: ShowOptions = {}): Promise<ModalResult> {
         // Language priority: 1. options.language (function parameter - highest priority)
         //                    2. this.currentLanguage (set via setLanguage() or constructor)
         //                    3. 'en' (default fallback)
@@ -332,7 +211,7 @@ class AsyncModal {
             await this.loadLocale(options.language);
         }
         
-        return new Promise((resolve) => {
+        return new Promise<ModalResult>((resolve) => {
             // Store resolve function
             this.currentResolve = resolve;
             
@@ -343,9 +222,9 @@ class AsyncModal {
                 themeSetting = options.darkTheme ? 'dark' : 'light';
             }
             if (!themeSetting) {
-                themeSetting = this.theme;
+                themeSetting = this.theme as 'dark' | 'light' | 'auto';
             }
-            const modalTheme = this._resolveTheme(themeSetting);
+            const modalTheme = this._resolveTheme(themeSetting ?? 'light');
             
             // Resolve timeout: priority: options.timeout > options.autoDismissTimeout (deprecated) > this.defaultTimeout
             let timeout = options.timeout !== undefined ? options.timeout : null;
@@ -361,7 +240,7 @@ class AsyncModal {
             
             // Default options with localization
             // Use modalLanguage for translations (respects function parameter priority)
-            const config = {
+            const config: ModalConfig = {
                 title: options.title || this.t('defaults.title', modalLanguage),
                 message: options.message || this.t('defaults.message', modalLanguage),
                 showCancel: options.showCancel !== undefined ? options.showCancel : true,
@@ -439,7 +318,7 @@ class AsyncModal {
      * @returns {string} - Modal HTML
      * @private
      */
-    createModalHtml(config) {
+    createModalHtml(config: ModalConfig): string {
         let buttonsHtml = '';
 
         // Cancel button
@@ -535,7 +414,7 @@ class AsyncModal {
      * @returns {string} - Escaped text
      * @private
      */
-    escapeHtml(text) {
+    escapeHtml(text: string): string {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
@@ -547,7 +426,7 @@ class AsyncModal {
      * @returns {string} - SVG icon HTML
      * @private
      */
-    getButtonIconSVG(iconName) {
+    getButtonIconSVG(iconName: string): string {
         const icons = {
             'times': '<svg width="14" height="14" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M324.5 411.1c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L214.6 256 347.1 123.5c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L192 233.4 59.5 100.9c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L169.4 256 36.9 388.5c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L192 278.6 324.5 411.1z"/></svg>',
             'check': '<svg width="14" height="14" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>',
@@ -555,7 +434,7 @@ class AsyncModal {
             'question-circle': '<svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10 23.6-23 23.6c-12.6 0-23-10.2-23-23.2l0-11.2c0-15.3 8.7-29.2 22.4-35.9l47.2-25.4c5.1-2.7 8.1-8.1 8.1-13.9c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/></svg>',
             'exclamation-triangle': '<svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>'
         };
-        return icons[iconName] || icons['question-circle'];
+        return (icons as Record<string, string>)[iconName] || icons['question-circle'];
     }
 
     /**
@@ -564,7 +443,7 @@ class AsyncModal {
      * @returns {string} - Icon HTML
      * @private
      */
-    getIconHtml(iconType) {
+    getIconHtml(iconType: string): string {
         const icons = {
             warning: '<svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>',
             danger: '<svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>',
@@ -572,7 +451,7 @@ class AsyncModal {
             success: '<svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>',
             question: '<svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10 23.6-23 23.6c-12.6 0-23-10.2-23-23.2l0-11.2c0-15.3 8.7-29.2 22.4-35.9l47.2-25.4c5.1-2.7 8.1-8.1 8.1-13.9c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/></svg>'
         };
-        return icons[iconType] || icons.question;
+        return (icons as Record<string, string>)[iconType] || icons.question;
     }
 
     /**
@@ -583,8 +462,9 @@ class AsyncModal {
         const checkbox = document.getElementById('confirmationCheckbox');
         if (!checkbox) return;
         
-        checkbox.addEventListener('change', (e) => {
-            this.toggleActionButtons(e.target.checked);
+        checkbox.addEventListener('change', (e: Event) => {
+            const el = e.target as HTMLInputElement;
+            this.toggleActionButtons(!!el?.checked);
         });
     }
 
@@ -593,8 +473,8 @@ class AsyncModal {
      * @private
      */
     disableAllButtons() {
-        const buttons = document.querySelectorAll('.async-modal-btn');
-        buttons.forEach(button => {
+        const buttons = document.querySelectorAll<HTMLButtonElement>('.async-modal-btn');
+        buttons.forEach((button) => {
             button.disabled = true;
             button.style.opacity = '0.6';
             button.style.cursor = 'not-allowed';
@@ -607,8 +487,8 @@ class AsyncModal {
      * @private
      */
     enableAllButtons() {
-        const buttons = document.querySelectorAll('.async-modal-btn');
-        buttons.forEach(button => {
+        const buttons = document.querySelectorAll<HTMLButtonElement>('.async-modal-btn');
+        buttons.forEach((button) => {
             button.disabled = false;
             button.style.opacity = '1';
             button.style.cursor = 'pointer';
@@ -621,8 +501,7 @@ class AsyncModal {
      * @private
      */
     disableActionButtons() {
-        // Disable only the Continue button
-        const continueButton = document.querySelector('.async-modal-btn-continue');
+        const continueButton = document.querySelector<HTMLButtonElement>('.async-modal-btn-continue');
         if (continueButton) {
             continueButton.disabled = true;
             continueButton.style.opacity = '0.6';
@@ -630,9 +509,8 @@ class AsyncModal {
             continueButton.style.pointerEvents = 'none';
         }
         
-        // Keep other buttons (Settings, Help, Danger) active
-        const otherButtons = document.querySelectorAll('.async-modal-btn-settings, .async-modal-btn-help, .async-modal-btn-danger');
-        otherButtons.forEach(button => {
+        const otherButtons = document.querySelectorAll<HTMLButtonElement>('.async-modal-btn-settings, .async-modal-btn-help, .async-modal-btn-danger');
+        otherButtons.forEach((button) => {
             button.disabled = false;
             button.style.opacity = '1';
             button.style.cursor = 'pointer';
@@ -640,14 +518,8 @@ class AsyncModal {
         });
     }
 
-    /**
-     * Toggles Continue button enabled/disabled state, other buttons remain active by default
-     * @param {boolean} enabled - Enable Continue button
-     * @private
-     */
-    toggleActionButtons(enabled) {
-        // Control only the Continue button
-        const continueButton = document.querySelector('.async-modal-btn-continue');
+    toggleActionButtons(enabled: boolean): void {
+        const continueButton = document.querySelector<HTMLButtonElement>('.async-modal-btn-continue');
         if (continueButton) {
             continueButton.disabled = !enabled;
             continueButton.style.opacity = enabled ? '1' : '0.6';
@@ -655,9 +527,8 @@ class AsyncModal {
             continueButton.style.pointerEvents = enabled ? 'auto' : 'none';
         }
         
-        // Keep other buttons (Settings, Help, Danger) active by default
-        const otherButtons = document.querySelectorAll('.async-modal-btn-settings, .async-modal-btn-help, .async-modal-btn-danger');
-        otherButtons.forEach(button => {
+        const otherButtons = document.querySelectorAll<HTMLButtonElement>('.async-modal-btn-settings, .async-modal-btn-help, .async-modal-btn-danger');
+        otherButtons.forEach((button) => {
             button.disabled = false;
             button.style.opacity = '1';
             button.style.cursor = 'pointer';
@@ -671,12 +542,11 @@ class AsyncModal {
      * @param {string} cancelButtonText - Cancel button text
      * @private
      */
-    startAutoDismissTimeout(timeoutSeconds, cancelButtonText) {
+    startAutoDismissTimeout(timeoutSeconds: number, cancelButtonText: string): void {
         // Clear previous timeout and interval
         this.clearAutoDismissTimeout();
         
-        // Find cancel button and update initial text
-        const cancelButton = document.querySelector('.async-modal-btn-cancel');
+        const cancelButton = document.querySelector<HTMLElement>('.async-modal-btn-cancel');
         if (cancelButton) {
             cancelButton.setAttribute('data-original-text', cancelButtonText);
             this.updateCancelButtonText(cancelButton, cancelButtonText, this.remainingSeconds);
@@ -687,8 +557,7 @@ class AsyncModal {
             this.remainingSeconds--;
             
             if (this.remainingSeconds > 0) {
-                // Update cancel button text
-                const cancelButton = document.querySelector('.async-modal-btn-cancel');
+                const cancelButton = document.querySelector<HTMLElement>('.async-modal-btn-cancel');
                 if (cancelButton) {
                     const originalText = cancelButton.getAttribute('data-original-text') || cancelButtonText;
                     this.updateCancelButtonText(cancelButton, originalText, this.remainingSeconds);
@@ -714,7 +583,7 @@ class AsyncModal {
      * @param {number} seconds - Remaining seconds
      * @private
      */
-    updateCancelButtonText(button, originalText, seconds) {
+    updateCancelButtonText(button: HTMLElement, originalText: string, seconds: number): void {
         const icon = button.querySelector('svg');
         const iconHtml = icon ? icon.outerHTML : this.getButtonIconSVG('times');
         const secondsText = this.t('timeout.seconds');
@@ -741,7 +610,7 @@ class AsyncModal {
      * @param {string} [customPath] - Custom sound file path
      * @private
      */
-    playSound(customPath = null) {
+    playSound(customPath: string | null = null): void {
         try {
             // Use custom path, instance path, or default path
             let soundPath = customPath || this.soundPath;
@@ -776,7 +645,7 @@ class AsyncModal {
      * Closes modal and returns result
      * @param {string} action - User's selection
      */
-    close(action) {
+    close(action: ModalResult): void {
         // Clear timeout and interval
         this.clearAutoDismissTimeout();
         
@@ -818,12 +687,12 @@ class AsyncModal {
      * @returns {string} - CSS file path
      * @private
      */
-    _getCSSPath() {
+    _getCSSPath(): string {
         // 1. Try to find from script tag
         if (typeof document !== 'undefined') {
             const scripts = document.getElementsByTagName('script');
             for (let script of scripts) {
-                if (script.src && (script.src.includes('asyncModal.js') || script.src.includes('async-modal'))) {
+                if (script.src && (script.src.includes('async-modal.js') || script.src.includes('async-modal.ts') || script.src.includes('async-modal'))) {
                     const basePath = script.src.substring(0, script.src.lastIndexOf('/'));
                     // Try async-modal.css in the same directory
                     return `${basePath}/async-modal.css`;
@@ -849,7 +718,7 @@ class AsyncModal {
      * @param {string} [options.language] - Language code (overrides global language for this modal)
      * @returns {Promise<string>} - User's selection
      */
-    async showWorkingTimeViolation(options = {}) {
+    async showWorkingTimeViolation(options: ShowOptions = {}): Promise<ModalResult> {
         const lang = options.language || this.currentLanguage;
         return this.show({
             title: options.title || this.t('titles.workingTimeViolation', lang),
@@ -870,7 +739,7 @@ class AsyncModal {
      * @param {string} [messageOrOptions.language] - Language code (overrides global language for this modal)
      * @returns {Promise<string>} - User's selection
      */
-    async showDangerousAction(messageOrOptions) {
+    async showDangerousAction(messageOrOptions?: string | ShowOptions): Promise<ModalResult> {
         // Support both string message and options object
         const options = typeof messageOrOptions === 'string' 
             ? { message: messageOrOptions } 
@@ -896,7 +765,7 @@ class AsyncModal {
      * @param {string} [messageOrOptions.language] - Language code (overrides global language for this modal)
      * @returns {Promise<string>} - User's selection
      */
-    async showConfirmation(messageOrOptions) {
+    async showConfirmation(messageOrOptions?: string | ShowOptions): Promise<ModalResult> {
         // Support both string message and options object
         const options = typeof messageOrOptions === 'string' 
             ? { message: messageOrOptions } 
@@ -922,7 +791,7 @@ class AsyncModal {
      * @param {string} [options.language] - Language code (overrides global language for this modal)
      * @returns {Promise<string>} - User's selection
      */
-    async showConfirmationWithResponsibility(message, confirmationText, options = {}) {
+    async showConfirmationWithResponsibility(message?: string, confirmationText?: string, options: ShowOptions = {}): Promise<ModalResult> {
         const lang = options.language || this.currentLanguage;
         return this.show({
             title: this.t('titles.responsibility', lang),
@@ -945,25 +814,27 @@ if (typeof window !== 'undefined') {
 
 // Setup modal button event listeners (only in browser environment)
 if (typeof document !== 'undefined') {
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.async-modal-btn')) {
-            const button = e.target.closest('.async-modal-btn');
-            const action = button.getAttribute('data-action');
-            
+    document.addEventListener('click', (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        const button = target?.closest?.('.async-modal-btn') as HTMLElement | null;
+        if (button) {
+            const action = button.getAttribute('data-action') as ModalResult | null;
+            if (!action) return;
+
             // Clear timeout and interval (user clicked button)
             if (window.asyncModal && window.asyncModal.currentModal) {
                 window.asyncModal.clearAutoDismissTimeout();
-                
+
                 // Restore cancel button original text
                 const cancelButton = document.querySelector('.async-modal-btn-cancel');
                 if (cancelButton && cancelButton.hasAttribute('data-original-text')) {
                     const originalText = cancelButton.getAttribute('data-original-text');
                     const icon = cancelButton.querySelector('svg');
-                    const iconHtml = icon ? icon.outerHTML : window.asyncModal.getButtonIconSVG('times');
+                    const iconHtml = icon ? icon.outerHTML : window.asyncModal!.getButtonIconSVG('times');
                     cancelButton.innerHTML = `${iconHtml} ${originalText}`;
                     cancelButton.removeAttribute('data-original-text');
                 }
-                
+
                 // Close modal and return result
                 window.asyncModal.close(action);
             }
@@ -971,22 +842,7 @@ if (typeof document !== 'undefined') {
     });
 }
 
-// CommonJS export
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = AsyncModal;
-    module.exports.default = AsyncModal;
-    module.exports.AsyncModal = AsyncModal;
-}
-
-// ES module export support
-// Note: Direct ES module exports cause syntax errors in regular browser script tags
-// For ES module support, use bundlers (webpack, rollup, vite, etc.) or <script type="module">
-// Bundlers will automatically convert CommonJS exports to ES modules
-// 
-// For direct ES module usage, create a separate .mjs file or use a bundler
-// 
-// This file supports:
-// 1. Browser: window.asyncModal (global instance)
-// 2. CommonJS: require('async-modal')
-// 3. ES modules: Use bundlers or import from a bundled version
+export default AsyncModal;
+export { AsyncModal };
+export type { ModalResult, AsyncModalOptions, ShowOptions } from './types';
 

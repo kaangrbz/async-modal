@@ -1,27 +1,31 @@
 {
-"name": "async-modal",
-  "version": "1.0.5",
+  "name": "async-modal",
+  "version": "1.0.6",
   "description": "A Promise-based modal system that returns user selection, with support for confirmation checkboxes, auto-dismiss timeouts, customizable buttons, and built-in internationalization (i18n) for 13+ languages",
-  "main": "src/asyncModal.js",
-  "module": "src/asyncModal.js",
-  "style": "src/async-modal.css",
+  "main": "dist/async-modal.cjs",
+  "module": "dist/async-modal.mjs",
+  "browser": "dist/async-modal.js",
+  "types": "dist/async-modal.d.ts",
+  "style": "dist/async-modal.css",
   "exports": {
     ".": {
-      "import": "./src/asyncModal.js",
-      "require": "./src/asyncModal.js",
-      "default": "./src/asyncModal.js"
+      "types": "./dist/async-modal.d.ts",
+      "import": "./dist/async-modal.mjs",
+      "require": "./dist/async-modal.cjs",
+      "default": "./dist/async-modal.mjs"
     },
-    "./style": "./src/async-modal.css"
+    "./style": "./dist/async-modal.css"
   },
   "files": [
-    "src",
+    "dist",
     "sound",
-    "locales",
     "images",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
+    "build": "vite build",
+    "dev": "vite examples",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -47,8 +51,12 @@
   },
   "homepage": "https://github.com/kaangrbz/async-modal#readme",
   "dependencies": {},
+  "devDependencies": {
+    "vite": "^6.0.0",
+    "typescript": "~5.8.2",
+    "vite-plugin-dts": "^4.3.0"
+  },
   "engines": {
     "node": ">=12.0.0"
   }
 }
-

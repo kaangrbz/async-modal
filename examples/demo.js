@@ -1,8 +1,3 @@
-// Set locale path for examples directory
-if (window.asyncModal) {
-    window.asyncModal.localePath = '../locales';
-}
-
 // Toggle code examples
 function toggleCode(codeId) {
     const codeContent = document.getElementById(codeId);
@@ -68,10 +63,20 @@ async function setDefaultLanguage(lang, button) {
     button.classList.add('active');
 }
 
+// Wait for asyncModal to be ready (fallback if needed)
+function waitForAsyncModal(callback) {
+    if (window.asyncModal) {
+        callback();
+    } else {
+        window.addEventListener('asyncModalReady', callback, { once: true });
+    }
+}
+
 // Initialize current settings display
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('currentTheme').textContent = window.asyncModal.getTheme();
-    document.getElementById('currentLanguage').textContent = window.asyncModal.currentLanguage;
+    waitForAsyncModal(() => {
+        document.getElementById('currentTheme').textContent = window.asyncModal.getTheme();
+        document.getElementById('currentLanguage').textContent = window.asyncModal.currentLanguage;
     
     // Set active theme button
     const theme = window.asyncModal.getTheme();
@@ -105,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+    });
 });
 
 // BASIC EXAMPLES

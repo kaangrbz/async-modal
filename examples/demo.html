@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Async Modal - Complete Demo</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="../src/async-modal.css">
+  <link rel="stylesheet" href="../dist/async-modal.css">
   <link rel="stylesheet" href="demo.css">
 
 </head>
@@ -85,7 +85,7 @@
         </div>
         <div id="code1" class="code-example-content">
           <pre><code><span class="keyword">async</span> <span class="function">function</span> showConfirmation() {
-  <span class="keyword">const</span> result = <span class="keyword">await</span> window.asyncModal.show({
+  <span class="keyword">const</span> result = <span class="keyword">await</span> window.async-modal.show({
     title: <span class="string">'Confirm Action'</span>,
     message: <span class="string">'Are you sure you want to proceed?'</span>,
     showCancel: <span class="keyword">true</span>,
@@ -117,7 +117,7 @@
         </div>
         <div id="code2" class="code-example-content">
           <pre><code><span class="keyword">async</span> <span class="function">function</span> showCustomMessage() {
-  <span class="keyword">const</span> result = <span class="keyword">await</span> window.asyncModal.show({
+  <span class="keyword">const</span> result = <span class="keyword">await</span> window.async-modal.show({
     title: <span class="string">'Save Changes'</span>,
     message: <span class="string">'You have unsaved changes. Do you want to save them before leaving?'</span>,
     showCancel: <span class="keyword">true</span>,
@@ -158,19 +158,19 @@
         </div>
         <div id="code3" class="code-example-content">
           <pre><code><span class="comment">// Warning icon</span>
-<span class="keyword">await</span> window.asyncModal.show({
+<span class="keyword">await</span> window.async-modal.show({
   title: <span class="string">'Warning'</span>,
   message: <span class="string">'This action may have unintended consequences.'</span>,
   icon: <span class="string">'warning'</span>
 });
 
 <span class="comment">// Danger icon</span>
-<span class="keyword">await</span> window.asyncModal.show({
+<span class="keyword">await</span> window.async-modal.show({
   icon: <span class="string">'danger'</span>
 });
 
 <span class="comment">// Info, success, question icons</span>
-<span class="keyword">await</span> window.asyncModal.show({
+<span class="keyword">await</span> window.async-modal.show({
   icon: <span class="string">'info'</span> <span class="comment">// or 'success', 'question'</span>
 });</code></pre>
         </div>
@@ -198,12 +198,12 @@
         </div>
         <div id="code4" class="code-example-content">
           <pre><code><span class="comment">// Simple confirmation</span>
-<span class="keyword">const</span> result = <span class="keyword">await</span> window.asyncModal.showConfirmation(
+<span class="keyword">const</span> result = <span class="keyword">await</span> window.async-modal.showConfirmation(
   <span class="string">'Do you want to save your changes?'</span>
 );
 
 <span class="comment">// Dangerous action confirmation</span>
-<span class="keyword">const</span> result = <span class="keyword">await</span> window.asyncModal.showDangerousAction(
+<span class="keyword">const</span> result = <span class="keyword">await</span> window.async-modal.showDangerousAction(
   <span class="string">'This will permanently delete all data. Are you absolutely sure?'</span>
 );</code></pre>
         </div>
@@ -226,7 +226,7 @@
           <button class="code-toggle" onclick="toggleCode('code5')">Show Code</button>
         </div>
         <div id="code5" class="code-example-content">
-          <pre><code><span class="keyword">await</span> window.asyncModal.show({
+          <pre><code><span class="keyword">await</span> window.async-modal.show({
   title: <span class="string">'Custom Buttons'</span>,
   message: <span class="string">'This modal has custom button text.'</span>,
   showCancel: <span class="keyword">true</span>,
@@ -260,7 +260,7 @@
           <button class="code-toggle" onclick="toggleCode('code6')">Show Code</button>
         </div>
         <div id="code6" class="code-example-content">
-          <pre><code><span class="keyword">await</span> window.asyncModal.show({
+          <pre><code><span class="keyword">await</span> window.async-modal.show({
   title: <span class="string">'Delete Account'</span>,
   message: <span class="string">'This will permanently delete your account.'</span>,
   showCancel: <span class="keyword">true</span>,
@@ -287,7 +287,7 @@
           <button class="code-toggle" onclick="toggleCode('code7')">Show Code</button>
         </div>
         <div id="code7" class="code-example-content">
-          <pre><code><span class="keyword">await</span> window.asyncModal.show({
+          <pre><code><span class="keyword">await</span> window.async-modal.show({
   title: <span class="string">'Session Expiring'</span>,
   message: <span class="string">'Your session will expire in 10 seconds.'</span>,
   showCancel: <span class="keyword">true</span>,
@@ -313,7 +313,7 @@
           <button class="code-toggle" onclick="toggleCode('code8')">Show Code</button>
         </div>
         <div id="code8" class="code-example-content">
-          <pre><code><span class="keyword">const</span> result = <span class="keyword">await</span> window.asyncModal.show({
+          <pre><code><span class="keyword">const</span> result = <span class="keyword">await</span> window.async-modal.show({
   title: <span class="string">'Action Required'</span>,
   message: <span class="string">'Please choose an action:'</span>,
   showCancel: <span class="keyword">true</span>,
@@ -343,7 +343,7 @@
           <button class="code-toggle" onclick="toggleCode('code9')">Show Code</button>
         </div>
         <div id="code9" class="code-example-content">
-          <pre><code><span class="keyword">const</span> result = <span class="keyword">await</span> window.asyncModal.showConfirmationWithResponsibility(
+          <pre><code><span class="keyword">const</span> result = <span class="keyword">await</span> window.async-modal.showConfirmationWithResponsibility(
   <span class="string">'This action may have serious consequences.'</span>,
   <span class="string">'I confirm that I accept full responsibility'</span>
 );</code></pre>
@@ -365,7 +365,7 @@
           <button class="code-toggle" onclick="toggleCode('code10')">Show Code</button>
         </div>
         <div id="code10" class="code-example-content">
-          <pre><code><span class="keyword">const</span> result = <span class="keyword">await</span> window.asyncModal.showWorkingTimeViolation({
+          <pre><code><span class="keyword">const</span> result = <span class="keyword">await</span> window.async-modal.showWorkingTimeViolation({
   message: <span class="string">'You are currently outside working hours. Are you sure you want to proceed?'</span>
 });</code></pre>
         </div>
@@ -386,7 +386,7 @@
           <button class="code-toggle" onclick="toggleCode('code11')">Show Code</button>
         </div>
         <div id="code11" class="code-example-content">
-          <pre><code><span class="keyword">await</span> window.asyncModal.show({
+          <pre><code><span class="keyword">await</span> window.async-modal.show({
   title: <span class="string">'Processing'</span>,
   message: <span class="string">'Please wait while we process your request...'</span>,
   disabled: <span class="keyword">true</span>,
@@ -413,7 +413,7 @@
           <button class="code-toggle" onclick="toggleCode('code12')">Show Code</button>
         </div>
         <div id="code12" class="code-example-content">
-          <pre><code><span class="keyword">await</span> window.asyncModal.show({
+          <pre><code><span class="keyword">await</span> window.async-modal.show({
   title: <span class="string">'Critical Action'</span>,
   message: <span class="string">'This requires confirmation and will auto-cancel in 15 seconds.'</span>,
   showCancel: <span class="keyword">true</span>,
@@ -430,8 +430,16 @@
 
   </div>
 
-  <script src="../src/asyncModal.js"></script>
-  <script src="demo.js"></script>
+  <script type="module">
+    import AsyncModal from '../dist/async-modal.mjs';
+    window.asyncModal = new AsyncModal();
+    // Signal that asyncModal is ready
+    window.dispatchEvent(new Event('asyncModalReady'));
+    // Load demo.js after asyncModal is ready
+    const script = document.createElement('script');
+    script.src = 'demo.js';
+    document.body.appendChild(script);
+  </script>
 </body>
 
 </html>
